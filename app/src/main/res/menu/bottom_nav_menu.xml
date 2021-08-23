@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/Comics"
+        android:icon="@drawable/ic_comic"
+        android:title="@string/comics"/>
+
+    <item
+        android:id="@+id/Manga"
+        android:icon="@drawable/ic_manga"
+        android:title="@string/manga"/>
+
+    <item
+        android:id="@+id/Search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/discover"/>
+</menu>
