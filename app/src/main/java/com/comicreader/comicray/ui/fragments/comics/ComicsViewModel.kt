@@ -36,7 +36,7 @@ class ComicsViewModel @Inject constructor(
     enum class Data {
         Featured
     }
-    
+
     val featuredComics = refreshTrigger.flatMapLatest {
         comicRepository.getFeaturedComicsTest(
             forceRefresh = it == Refresh.Force,

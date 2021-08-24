@@ -63,6 +63,9 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
             viewModel.onManuelRefresh()
         }
 
+        viewModel.events.observe(viewLifecycleOwner,{
+            Toast.makeText(context,"$it",Toast.LENGTH_SHORT).show()
+        })
 
     }
 
