@@ -70,7 +70,12 @@ class ComicRepository @Inject constructor(
             }
         },
         shouldFetch = { featuredComics -> //it : List<FeaturedComic>
-            true
+            if(forceRefresh){
+                true
+            }else{
+                val cachedComics = featuredComics.isEmpty()
+                cachedComics
+            }
         },
         onFetchSuccess = fetchSuccess,
         onFetchFailed = {

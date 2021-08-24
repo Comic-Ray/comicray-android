@@ -15,6 +15,8 @@ class ComicAdapter : RecyclerView.Adapter<ComicAdapter.ComicViewHolder>() {
 //    private lateinit var resource1 : Resource<List<FeaturedComic>>
 //    private lateinit var finalList : List<FeaturedComic>
 
+//    private val rpool = object : RecyclerView.RecycledViewPool()
+
     private val differCallBack = object : DiffUtil.ItemCallback<CustomData>() {
         override fun areItemsTheSame(oldItem: CustomData, newItem: CustomData): Boolean {
             return oldItem.title == newItem.title
@@ -68,16 +70,13 @@ class ComicAdapter : RecyclerView.Adapter<ComicAdapter.ComicViewHolder>() {
             }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return 0
-    }
-
+    
     fun ItemRecViewBinding.setUpItemComicRec(comics : List<CommonData>){
         val adapter = CustomAdapter(comics)
 
 //        binding.itemComicRec.layoutManager = LinearLayoutManager(binding.itemComicRec.context,LinearLayoutManager.HORIZONTAL,false)
         itemComicRec.setHasFixedSize(true)
-        itemComicRec.recycledViewPool.setMaxRecycledViews(0, 0)
+        itemComicRec.recycledViewPool.setMaxRecycledViews(0, 15)
         itemComicRec.adapter = adapter
     }
 
