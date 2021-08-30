@@ -73,6 +73,7 @@ class ComicRepository @Inject constructor(
             if(forceRefresh){
                 true
             }else{
+                //todo refresh the data after sometimes
                 val cachedComics = featuredComics.isEmpty()
                 cachedComics
             }

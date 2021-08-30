@@ -18,15 +18,12 @@ class ComicsViewModel @Inject constructor(
     private val comicRepository: ComicRepository
 ) : ViewModel() {
 
-    private val eventChannel = MutableLiveData<Event>()
-    val events: LiveData<Event> get() = eventChannel
+    private val eventChannel = Channel<Event>()
+    val events = eventChannel.receiveAsFlow()
 
+//    private val _collectionOfComics = MediatorLiveData<HashMap<Data, CustomData>>()
+//    val collectionComics: LiveData<HashMap<Data, CustomData>> = _collectionOfComics
 
-    private val _collectionOfComics = MediatorLiveData<HashMap<Data, CustomData>>()
-    val collectionComics: LiveData<HashMap<Data, CustomData>> = _collectionOfComics
-
-    private val _allComics = MediatorLiveData<Resource<List<FeaturedComic>>>()
-    val allComics: LiveData<Resource<List<FeaturedComic>>> = _allComics
 
     private val refreshTriggerChannel = Channel<Refresh>()
     private val refreshTrigger get() = refreshTriggerChannel.receiveAsFlow()
@@ -37,58 +34,49 @@ class ComicsViewModel @Inject constructor(
         Featured
     }
 
+    val collectionComicsFlow: Flow<HashMap<Data, CustomData>> = flow {
+        featuredComics.collect {
+            if (it is Resource.Success) {
+                list[Data.Featured] = CustomData(
+                    "Featured Comics",
+                    convertToCommonData(it.data)
+                )
+                emit(list)
+            }
+        }
+    }
+
     val featuredComics = refreshTrigger.flatMapLatest {
         comicRepository.getFeaturedComicsTest(
             forceRefresh = it == Refresh.Force,
             fetchSuccess = {},
             onFetchFailed = { throwable ->
-                eventChannel.value = Event.showErrorMessage(throwable)
+                viewModelScope.launch {
+                    eventChannel.send(Event.showErrorMessage(throwable))
+                }
             }
         )
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
 //    fun getFComics() {
 //        viewModelScope.launch {
-//            comicRepository.getFeaturedComicsTest(
-//                forceRefresh = true,
-//                fetchSuccess = {},
-//                onFetchFailed = {
-//                    eventChannel.value = Event.showErrorMessage(it)
-//                }
-//            ).collect {
+//            featuredComics.collect {
 //                if (it is Resource.Success) {
-////                        _featuredComics.value = it.data!!
-//                    list[Data.Featured] = CustomData(
-//                        "Featured Comics",
-//                        convertToCommonData(it.data!!)
-//                    )
-//                    _allComics.postValue(it)
-//                    _collectionOfComics.postValue(list)
+//                    if (!it.data.isNullOrEmpty()) {
+//                        list[Data.Featured] = CustomData(
+//                            "Featured Comics",
+//                            convertToCommonData(it.data)
+//                        )
+//                        _collectionOfComics.postValue(list)
+//                    }
 //                }
 //            }
 //        }
+//
 //    }
 
-    fun getFComics() {
-        viewModelScope.launch {
-            featuredComics.collect {
-                if (it is Resource.Success) {
-                    if (!it.data.isNullOrEmpty()) {
-                        list[Data.Featured] = CustomData(
-                            "Featured Comics",
-                            convertToCommonData(it.data)
-                        )
-                        _allComics.postValue(it)
-                        _collectionOfComics.postValue(list)
-                    }
-                }
-            }
-        }
-
-    }
-
     init {
-        getFComics()
+//        getFComics()
     }
 
     fun onManuelRefresh() {
