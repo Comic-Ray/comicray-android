@@ -1,11 +1,14 @@
 package com.comicreader.comicray.ui.fragments.comics
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.comicreader.comicray.R
 import com.comicreader.comicray.adapters.ComicAdapter
@@ -14,6 +17,7 @@ import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.ValueFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
@@ -31,25 +35,55 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
 
         setupRecView()
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.collectionComicsFlow.collect {
-                adapter.submitList(it)
-            }
-        }
+//        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+//            viewModel.collectionComicsFlow.collect {
+//                adapter.submitList(it)
+//            }
+//        }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.featuredComics.collect {
-                binding.progressbar.isVisible = it is Resource.Loading
-                binding.featuredRecView.isVisible = it !is Resource.Loading
-                binding.swipeRefreshLayout.isRefreshing = it is Resource.Loading
-            }
-        }
+//        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+//            viewModel.collectionF.collect {
+//                adapter.submitList(it)
+//            }
+//        }
+
+//        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+//            viewModel.featuredComics.collect {
+//                binding.progressbar.isVisible = it is Resource.Loading
+//                binding.featuredRecView.isVisible = it !is Resource.Loading
+//                binding.swipeRefreshLayout.isRefreshing = it is Resource.Loading
+//            }
+//        }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.events.collect {
-                when(it) {
+                when (it) {
                     is ComicsViewModel.Event.showErrorMessage ->
-                        Toast.makeText(context, it.error.localizedMessage, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, it.error.localizedMessage, Toast.LENGTH_SHORT)
+                            .show()
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                launch {
+//                    viewModel.comicList.collect {
+//                        Log.d("TAGG", "onViewCreated inside New Funtion: $it")
+//                        adapter.submitList(it)
+//                        adapter.notifyDataSetChanged()
+//                    }
+
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.getActionComics().collect {
+                    adapter.submitList(it)
+                    adapter.notifyDataSetChanged()
                 }
             }
         }
@@ -57,11 +91,9 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.onManuelRefresh()
         }
-
-
     }
 
-    private fun setupRecView(){
+    private fun setupRecView() {
         adapter = ComicAdapter()
         binding.featuredRecView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

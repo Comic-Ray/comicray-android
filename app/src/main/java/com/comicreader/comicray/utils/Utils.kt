@@ -5,3 +5,8 @@ enum class Refresh {
     Force
 }
 
+enum class ComicGenres {
+    Featured,
+    Action
+}
+

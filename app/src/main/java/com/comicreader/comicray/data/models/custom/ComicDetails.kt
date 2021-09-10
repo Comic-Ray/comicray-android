@@ -1,6 +1,6 @@
 package com.comicreader.comicray.data.models.custom
 
-data class CommonData(
+data class ComicDetails(
     var title: String,
     val url: String,
     val imageUrl: String,

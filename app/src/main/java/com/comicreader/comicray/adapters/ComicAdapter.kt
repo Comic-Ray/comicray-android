@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.comicreader.comicray.data.models.custom.CommonData
+import com.comicreader.comicray.data.models.custom.ComicDetails
 import com.comicreader.comicray.data.models.custom.CustomData
 import com.comicreader.comicray.databinding.ItemRecViewBinding
-import com.comicreader.comicray.ui.fragments.comics.ComicsViewModel
+import com.comicreader.comicray.utils.ComicGenres
 
 class ComicAdapter : RecyclerView.Adapter<ComicAdapter.ComicViewHolder>() {
 
@@ -48,7 +48,7 @@ class ComicAdapter : RecyclerView.Adapter<ComicAdapter.ComicViewHolder>() {
         }
     }
 
-    fun submitList(listOfComics: Map<ComicsViewModel.Data,CustomData>){
+    fun submitList(listOfComics: Map<ComicGenres,CustomData>){
             differ.submitList(listOfComics.map {
                 it.value
             })
@@ -71,7 +71,7 @@ class ComicAdapter : RecyclerView.Adapter<ComicAdapter.ComicViewHolder>() {
     }
 
     
-    fun ItemRecViewBinding.setUpItemComicRec(comics : List<CommonData>){
+    fun ItemRecViewBinding.setUpItemComicRec(comics : List<ComicDetails>){
         val adapter = CustomAdapter(comics)
 
 //        binding.itemComicRec.layoutManager = LinearLayoutManager(binding.itemComicRec.context,LinearLayoutManager.HORIZONTAL,false)

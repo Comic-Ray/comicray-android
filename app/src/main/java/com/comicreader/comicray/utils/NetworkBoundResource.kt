@@ -1,8 +1,6 @@
 package com.comicreader.comicray.utils
 
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-
 
 inline fun <ResultType, RequestType> networkBoundResource(
     crossinline query: () -> Flow<ResultType>,
@@ -15,7 +13,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
     val data = query().first()
 
     if (shouldFetch(data)) {
-            emit(Resource.Loading(null))
+            emit(Resource.Loading())
 
         try {
             saveFetchResult(fetch())

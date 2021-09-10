@@ -2,18 +2,13 @@ package com.comicreader.comicray.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.comicreader.comicray.data.models.custom.CommonData
-import com.comicreader.comicray.data.models.custom.CustomData
+import com.comicreader.comicray.data.models.custom.ComicDetails
 import com.comicreader.comicray.databinding.ItemComicBinding
 import com.comicreader.comicray.utils.load
 
 class CustomAdapter(
-    val listOfComics : List<CommonData>
+    val listOfComics : List<ComicDetails>
 ) : RecyclerView.Adapter<CustomAdapter.CustomViewHolder>() {
 
 //    val differCallback = object : DiffUtil.ItemCallback<CommonData>() {
@@ -52,7 +47,7 @@ class CustomAdapter(
     inner class CustomViewHolder(private val binding: ItemComicBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-            fun bind(currentComic : CommonData){
+            fun bind(currentComic : ComicDetails){
                 binding.setImage(currentComic.imageUrl)
                 binding.txtView.text = currentComic.title
 
