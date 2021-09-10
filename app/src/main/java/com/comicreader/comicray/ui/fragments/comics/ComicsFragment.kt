@@ -1,10 +1,8 @@
 package com.comicreader.comicray.ui.fragments.comics
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -13,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.comicreader.comicray.R
 import com.comicreader.comicray.adapters.ComicAdapter
 import com.comicreader.comicray.databinding.FragmentComicsBinding
-import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.ValueFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -81,7 +78,8 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.getActionComics().collect {
+                viewModel.getAllComics().collect {
+
                     adapter.submitList(it)
                     adapter.notifyDataSetChanged()
                 }

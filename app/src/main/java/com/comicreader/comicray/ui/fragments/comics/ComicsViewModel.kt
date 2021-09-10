@@ -13,7 +13,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import okhttp3.internal.toImmutableMap
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 @HiltViewModel
 class ComicsViewModel @Inject constructor(
@@ -23,10 +26,10 @@ class ComicsViewModel @Inject constructor(
     private val eventChannel = Channel<Event>()
     val events = eventChannel.receiveAsFlow()
 
-    private val comicListChannel = Channel<HashMap<ComicGenres,CustomData>>()
+    private val comicListChannel = Channel<Map<ComicGenres,CustomData>>()
     val comicList = comicListChannel.receiveAsFlow()
 
-     val comicListMutable = MutableStateFlow(HashMap<ComicGenres,CustomData>(0))
+     val comicListMutable: MutableStateFlow<Map<ComicGenres,CustomData>> = MutableStateFlow(emptyMap())
 
 
 //    private val _collectionOfComics = MediatorLiveData<HashMap<Data, CustomData>>()
@@ -49,34 +52,35 @@ class ComicsViewModel @Inject constructor(
         }
     }
 
+    // You don't need this
     fun getComics() = channelFlow<HashMap<ComicGenres,CustomData>> {
-        refreshTrigger.flatMapLatest {
-            comicRepository.getFeaturedComics(
-                forceRefresh = it == Refresh.Force,
-                fetchSuccess = {},
-                onFetchFailed = { t ->
-                    viewModelScope.launch {
-                        eventChannel.send(Event.showErrorMessage(t))
-                    }
-                }
-            )
-        }.collect {
-            if (it is Resource.Success) {
-                list[ComicGenres.Featured] = CustomData(
-                    "Featured Comics",
-                    convertToCommonData(it.data)
-                )
-                comicListMutable.value = list
-                comicListChannel.send(list)
-            }
-        }
+//        refreshTrigger.flatMapLatest {
+//            comicRepository.getFeaturedComics(
+//                forceRefresh = it == Refresh.Force,
+//                fetchSuccess = {},
+//                onFetchFailed = { t ->
+//                    viewModelScope.launch {
+//                        eventChannel.send(Event.showErrorMessage(t))
+//                    }
+//                }
+//            )
+//        }.collect {
+//            if (it is Resource.Success) {
+//                list[ComicGenres.Featured] = CustomData(
+//                    "Featured Comics",
+//                    convertToCommonData(it.data)
+//                )
+//                comicListMutable.value = list
+//                comicListChannel.send(list)
+//            }
+//        }
     }
 
 
-    fun getActionComics() = channelFlow<HashMap<ComicGenres,CustomData>> {
-        refreshTrigger.flatMapLatest {
-            comicRepository.getGenreComics(
-                forceRefresh = it == Refresh.Force,
+    fun getAllComics(): Flow<Map<ComicGenres, CustomData>> = flow {
+        refreshTrigger.flatMapLatest { trigger ->
+            val actionFlow = comicRepository.getGenreComics(
+                forceRefresh = trigger == Refresh.Force,
                 tag = "action-comic",
                 fetchSuccess = {},
                 onFetchFailed = { throwable ->
@@ -85,16 +89,37 @@ class ComicsViewModel @Inject constructor(
                     }
                 }
             )
-        }.collect {
-            if (it is Resource.Success) {
-                if (it.data?.data?.isNotEmpty() == true) {
-                    list[ComicGenres.Action] = CustomData(
-                        "Action Comics",
-                        it.data.data
-                    )
-                    comicListMutable.value = list
-                    comicListChannel.send(list)
+            val featuredFlow = comicRepository.getFeaturedComics(
+                forceRefresh = trigger == Refresh.Force,
+                fetchSuccess = {},
+                onFetchFailed = { t ->
+                    viewModelScope.launch {
+                        eventChannel.send(Event.showErrorMessage(t))
+                    }
                 }
+            )
+            featuredFlow.combine(actionFlow) { featuredFlowResponse, actionFlowResponse ->
+                val hashMap = HashMap<ComicGenres, CustomData>()
+                if (actionFlowResponse is Resource.Success) {
+                    val actionData = actionFlowResponse.data?.data
+                    if (actionData?.isNotEmpty() == true) {
+                        hashMap[ComicGenres.Action] = CustomData("Action Comics", actionData)
+                    }
+                }
+
+                if (featuredFlowResponse is Resource.Success) {
+                    val featuredData = featuredFlowResponse.data
+                    if (featuredData?.isNotEmpty() == true) {
+                        hashMap[ComicGenres.Featured] = CustomData("Featured Comics", convertToCommonData(featuredData))
+                    }
+                }
+                return@combine hashMap.toImmutableMap()
+            }
+        }.collect { map ->
+            map.forEach { (key, value) ->
+                list[key] = value
+                comicListMutable.value = list.toImmutableMap()
+                emit(comicListMutable.value)
             }
         }
     }
