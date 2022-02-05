@@ -69,7 +69,7 @@ object AppModule {
         return Room.databaseBuilder(
             context,
             ComicDatabase::class.java,
-            "ComicRay Database"
+            "comicray.db"
         ).build()
 
     }

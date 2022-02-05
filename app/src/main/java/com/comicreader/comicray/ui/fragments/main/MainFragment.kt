@@ -4,14 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.comicreader.comicray.R
+import com.comicreader.comicray.TestComicData
 import com.comicreader.comicray.databinding.FragmentMainBinding
+import com.comicreader.comicray.extensions.viewBinding
 import com.comicreader.comicray.ui.fragments.comics.ComicsFragment
 import com.comicreader.comicray.ui.fragments.discover.DiscoverFragment
 import com.comicreader.comicray.ui.fragments.manga.MangaFragment
-import com.kpstv.navigation.BottomNavigationController
-import com.kpstv.navigation.FragmentNavigator
-import com.kpstv.navigation.ValueFragment
-import com.kpstv.navigation.install
+import com.comicreader.comicray.ui.fragments.read.ReadFragment
+import com.kpstv.navigation.*
 import kotlin.reflect.KClass
 
 class MainFragment : ValueFragment(R.layout.fragment_main),FragmentNavigator.Transmitter {
@@ -19,19 +19,16 @@ class MainFragment : ValueFragment(R.layout.fragment_main),FragmentNavigator.Tra
     private lateinit var navigator : FragmentNavigator
     private lateinit var bottomNavController : BottomNavigationController
 
-    private var _binding : FragmentMainBinding?=null
-    private val binding get() = _binding!!
+    private val binding by viewBinding(FragmentMainBinding::bind)
 
     override fun getNavigator(): FragmentNavigator = navigator
 
     override val forceBackPress: Boolean
-        get() = _binding?.bottomNavView?.selectedItemId != R.id.Comics
+        get() = binding.bottomNavView.selectedItemId != R.id.Comics
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        _binding = FragmentMainBinding.bind(view)
 
         navigator = FragmentNavigator.with(this,savedInstanceState)
             .initialize(binding.fragmentContainer)
@@ -51,6 +48,26 @@ class MainFragment : ValueFragment(R.layout.fragment_main),FragmentNavigator.Tra
             override val fragmentNavigationTransition = Animation.SlideHorizontally
         })
 
+
+        // TODO(KP): Remove this code once detail screens are implemented.
+
+        binding.testComicRead.setOnClickListener {
+            val options = FragmentNavigator.NavOptions(
+                args = ReadFragment.Args(
+                    title = TestComicData.title,
+                    episodeTitle = TestComicData.issueTitle,
+                    url = TestComicData.url,
+                    imageList = TestComicData.imageList
+                ),
+                animation = AnimationDefinition.Fade,
+                remember = true,
+            )
+            getParentNavigator().navigateTo(ReadFragment::class, options)
+        }
+
+        binding.testMangaRead.setOnClickListener {
+
+        }
     }
 
     override fun onBackPressed(): Boolean {
@@ -59,10 +76,5 @@ class MainFragment : ValueFragment(R.layout.fragment_main),FragmentNavigator.Tra
             return true
         }
         return super.onBackPressed()
-    }
-
-    override fun onDestroy() {
-        _binding = null
-        super.onDestroy()
     }
 }

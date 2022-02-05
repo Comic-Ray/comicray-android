@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'kotlin-parcelize'
     id 'dagger.hilt.android.plugin'
 }
 
@@ -98,6 +99,7 @@ dependencies {
 
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
@@ -107,6 +109,10 @@ dependencies {
 
     //flow
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha03"
+
+    // epoxy
+    implementation "com.airbnb.android:epoxy:5.0.0-beta05"
+    kapt "com.airbnb.android:epoxy-processor:5.0.0-beta05"
 }
 kapt {
     correctErrorTypes true
