@@ -1,10 +1,15 @@
 package com.comicreader.comicray.ui.fragments.read
 
 import android.os.Bundle
+import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
+import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.comicreader.comicray.R
 import com.comicreader.comicray.databinding.FragmentReadBinding
+import com.comicreader.comicray.extensions.isExpanded
 import com.comicreader.comicray.extensions.viewBinding
 import com.comicreader.comicray.ui.fragments.read.epoxy.ReadController
 import com.kpstv.navigation.BaseArgs
@@ -27,7 +32,27 @@ class ReadFragment : ValueFragment(R.layout.fragment_read) {
 
         setToolbarMenu()
         setRecyclerView()
+        setProgressIndicator()
+        setToolbarScrollBehavior()
+    }
 
+    private fun setToolbarScrollBehavior() {
+        binding.epoxyRecyclerView.addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
+            private val gestureDetector = GestureDetectorCompat(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                    binding.appBarLayout.setExpanded(!binding.appBarLayout.isExpanded)
+                    return super.onSingleTapUp(e)
+                }
+            })
+
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                gestureDetector.onTouchEvent(e)
+                return super.onInterceptTouchEvent(rv, e)
+            }
+        })
+    }
+
+    private fun setProgressIndicator() {
         binding.epoxyRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val scrollRange = recyclerView.computeVerticalScrollRange()
