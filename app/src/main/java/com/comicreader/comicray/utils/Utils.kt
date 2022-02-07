@@ -7,6 +7,7 @@ enum class Refresh {
 
 enum class ComicGenres {
     Featured,
-    Action
+    Action,
+    Popular
 }
 

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.comicreader.comicray.R
 import com.comicreader.comicray.adapters.ComicAdapter
 import com.comicreader.comicray.databinding.FragmentComicsBinding
+import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.ValueFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -55,33 +56,34 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.events.collect {
                 when (it) {
-                    is ComicsViewModel.Event.showErrorMessage ->
+                    is ComicsViewModel.Event.ShowErrorMessage ->
                         Toast.makeText(context, it.error.localizedMessage, Toast.LENGTH_SHORT)
                             .show()
                 }
             }
         }
 
+
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
-                launch {
-//                    viewModel.comicList.collect {
-//                        Log.d("TAGG", "onViewCreated inside New Funtion: $it")
-//                        adapter.submitList(it)
-//                        adapter.notifyDataSetChanged()
-//                    }
-
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.getAllComics().collect {
+                    adapter.submitList(it)
+                    adapter.notifyDataSetChanged()
                 }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.getAllComics().collect {
-
-                    adapter.submitList(it)
-                    adapter.notifyDataSetChanged()
+                viewModel.isBusy.collect {
+                    when(it){
+                        is Resource.Loading -> Toast.makeText(context, "Loading", Toast.LENGTH_SHORT)
+                            .show()
+                        is Resource.Success -> Toast.makeText(context, "Success ${it.data}", Toast.LENGTH_SHORT)
+                            .show()
+                        is Resource.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
         }

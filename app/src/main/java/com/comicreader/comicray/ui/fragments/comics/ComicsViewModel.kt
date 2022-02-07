@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.comicreader.comicray.data.models.custom.ComicDetails
 import com.comicreader.comicray.data.models.custom.CustomData
+import com.comicreader.comicray.data.models.custom.GenreResponse
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
 import com.comicreader.comicray.data.repositories.ComicRepository
 import com.comicreader.comicray.utils.ComicGenres
@@ -26,79 +27,66 @@ class ComicsViewModel @Inject constructor(
     private val eventChannel = Channel<Event>()
     val events = eventChannel.receiveAsFlow()
 
-    private val comicListChannel = Channel<Map<ComicGenres,CustomData>>()
+    private val comicListChannel = Channel<Map<ComicGenres, CustomData>>()
     val comicList = comicListChannel.receiveAsFlow()
 
-     val comicListMutable: MutableStateFlow<Map<ComicGenres,CustomData>> = MutableStateFlow(emptyMap())
+    val comicListMutable: MutableStateFlow<Map<ComicGenres, CustomData>> =
+        MutableStateFlow(emptyMap())
 
+    private val _isBusy = Channel<Resource<Any>>()
+    val isBusy = _isBusy.receiveAsFlow()
 
-//    private val _collectionOfComics = MediatorLiveData<HashMap<Data, CustomData>>()
-//    val collectionComics: LiveData<HashMap<Data, CustomData>> = _collectionOfComics
 
     private val refreshTriggerChannel = Channel<Refresh>()
     private val refreshTrigger get() = refreshTriggerChannel.receiveAsFlow()
 
     private val list = HashMap<ComicGenres, CustomData>()
 
-    val collectionComicsFlow: Flow<HashMap<ComicGenres, CustomData>> = flow {
-        featuredComics.collect {
-            if (it is Resource.Success) {
-                list[ComicGenres.Featured] = CustomData(
-                    "Featured Comics",
-                    convertToCommonData(it.data)
-                )
-                emit(list)
-            }
-        }
-    }
 
-    // You don't need this
-    fun getComics() = channelFlow<HashMap<ComicGenres,CustomData>> {
-//        refreshTrigger.flatMapLatest {
-//            comicRepository.getFeaturedComics(
-//                forceRefresh = it == Refresh.Force,
-//                fetchSuccess = {},
-//                onFetchFailed = { t ->
-//                    viewModelScope.launch {
-//                        eventChannel.send(Event.showErrorMessage(t))
-//                    }
-//                }
-//            )
-//        }.collect {
-//            if (it is Resource.Success) {
-//                list[ComicGenres.Featured] = CustomData(
-//                    "Featured Comics",
-//                    convertToCommonData(it.data)
-//                )
-//                comicListMutable.value = list
-//                comicListChannel.send(list)
-//            }
-//        }
-    }
-
-
-    fun getAllComics(): Flow<Map<ComicGenres, CustomData>> = flow {
+    fun getAllComics(): Flow<Map<ComicGenres, CustomData>> = channelFlow {
         refreshTrigger.flatMapLatest { trigger ->
+
+            if (trigger == Refresh.Force){
+                _isBusy.send(Resource.Loading())
+            }
+
+            val featuredFlow = comicRepository.getFeaturedComics(
+                forceRefresh = trigger == Refresh.Force,
+                fetchSuccess = {},
+                onFetchFailed = { t ->
+                    viewModelScope.launch {
+                        eventChannel.send(Event.ShowErrorMessage(t))
+                    }
+                }
+            )
+
             val actionFlow = comicRepository.getGenreComics(
                 forceRefresh = trigger == Refresh.Force,
                 tag = "action-comic",
                 fetchSuccess = {},
                 onFetchFailed = { throwable ->
                     viewModelScope.launch {
-                        eventChannel.send(Event.showErrorMessage(throwable))
+                        eventChannel.send(Event.ShowErrorMessage(throwable))
                     }
                 }
             )
-            val featuredFlow = comicRepository.getFeaturedComics(
+
+            val popularFlow = comicRepository.getGenreComics(
                 forceRefresh = trigger == Refresh.Force,
+                tag = "popular-comic",
                 fetchSuccess = {},
-                onFetchFailed = { t ->
+                onFetchFailed = { throwable ->
                     viewModelScope.launch {
-                        eventChannel.send(Event.showErrorMessage(t))
+                        eventChannel.send(Event.ShowErrorMessage(throwable))
                     }
                 }
             )
-            featuredFlow.combine(actionFlow) { featuredFlowResponse, actionFlowResponse ->
+
+            combine(
+                featuredFlow,
+                actionFlow,
+                popularFlow
+            ) { featuredFlowResponse, actionFlowResponse, popularFlowResponse ->
                 val hashMap = HashMap<ComicGenres, CustomData>()
                 if (actionFlowResponse is Resource.Success) {
                     val actionData = actionFlowResponse.data?.data
@@ -110,31 +98,28 @@ class ComicsViewModel @Inject constructor(
                 if (featuredFlowResponse is Resource.Success) {
                     val featuredData = featuredFlowResponse.data
                     if (featuredData?.isNotEmpty() == true) {
-                        hashMap[ComicGenres.Featured] = CustomData("Featured Comics", convertToCommonData(featuredData))
+                        hashMap[ComicGenres.Featured] =
+                            CustomData("Featured Comics", convertToCommonData(featuredData))
                     }
                 }
+
+                if (popularFlowResponse is Resource.Success) {
+                    val popularComicsData = popularFlowResponse.data?.data
+                    if (popularComicsData?.isNotEmpty() == true) {
+                        hashMap[ComicGenres.Popular] =
+                            CustomData("Popular Comics", popularComicsData)
+                    }
+                }
+
+                send(hashMap.toImmutableMap())
                 return@combine hashMap.toImmutableMap()
             }
         }.collect { map ->
             map.forEach { (key, value) ->
                 list[key] = value
                 comicListMutable.value = list.toImmutableMap()
-                emit(comicListMutable.value)
-            }
-        }
-    }
-
-    val collectionF: Flow<HashMap<ComicGenres, CustomData>> = flow {
-        actionComics.collect {
-            if (it is Resource.Success) {
-                if (it.data?.data?.isNotEmpty() == true) {
-                    list[ComicGenres.Action] = CustomData(
-                        "Action Comics",
-                        it.data.data
-                    )
-                    emit(list)
-                }
-//                Log.d("TAGG", "${it.data?.data}")
+                _isBusy.send(Resource.Success(list))
+                send(comicListMutable.value)
             }
         }
     }
@@ -146,7 +131,7 @@ class ComicsViewModel @Inject constructor(
             fetchSuccess = {},
             onFetchFailed = { throwable ->
                 viewModelScope.launch {
-                    eventChannel.send(Event.showErrorMessage(throwable))
+                    eventChannel.send(Event.ShowErrorMessage(throwable))
                 }
             }
         )
@@ -158,41 +143,37 @@ class ComicsViewModel @Inject constructor(
             fetchSuccess = {},
             onFetchFailed = { throwable ->
                 viewModelScope.launch {
-                    eventChannel.send(Event.showErrorMessage(throwable))
+                    eventChannel.send(Event.ShowErrorMessage(throwable))
                 }
             }
         )
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     init {
-//        getFComics()
         viewModelScope.launch {
-//            collectionF.collect {
-//                comicListMutable.value = it
-//            }
-            getComics().collect { }
-//            getActionComics().collect {  }
+            _isBusy.send(Resource.Loading())
         }
+        Log.d("TAGG", "onStart: Viewmodel init")
     }
 
     fun onManuelRefresh() {
         viewModelScope.launch {
-            if (featuredComics.value !is Resource.Loading) {
+//            if (_isBusy.receive() !is Resource.Loading) {
                 refreshTriggerChannel.send(Refresh.Force)
-            }
+//            }
         }
     }
 
     fun onStart() {
         viewModelScope.launch {
-            if (featuredComics.value !is Resource.Loading) {
+//            if (_isBusy.receive() is Resource.Loading) {
                 refreshTriggerChannel.send(Refresh.Normal)
-            }
+//            }
+            Log.d("TAGG", "onStart: Viewmodel OnStart")
         }
     }
 
     private fun convertToCommonData(featured: List<FeaturedComic>?): List<ComicDetails> {
-
         return featured?.map {
             ComicDetails(
                 title = it.title,
@@ -203,7 +184,7 @@ class ComicsViewModel @Inject constructor(
     }
 
     sealed class Event {
-        data class showErrorMessage(val error: Throwable) : Event()
+        data class ShowErrorMessage(val error: Throwable) : Event()
     }
 
     override fun onCleared() {
