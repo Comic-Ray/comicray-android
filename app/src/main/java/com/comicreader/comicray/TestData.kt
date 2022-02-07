@@ -43,3 +43,47 @@ object TestComicData {
         "https://2.bp.blogspot.com/0Rq73C88RDN92G1SET87ZBY_t_MOgffRm9sD6EOszlLppSwJ8q4U_O3I3ri5iiAx2SRF1s3eoErehlmZvvYjQogFSNw7eHp3KbLQI0cPdhvomrcKThZB1e54GKXpqavp0Shy3SvoZg=s1600"
     )
 }
+
+object TestMangaData {
+    const val title = "Lv999 No Murabito"
+    const val issueTitle: String = "Chapter 48"
+    const val url = "https://readmanganato.com/manga-zl977046/chapter-48"
+    val imageList = listOf(
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/1.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/2.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/3.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/4.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/5.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/6.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/7.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/8.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/9.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/10.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/11.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/12.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/13.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/14.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/15.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/16.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/17.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/18.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/19.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/20.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/21.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/22.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/23.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/24.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/25.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/26.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/27.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/28.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/29.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/30.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/31.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/32.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/33.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/34.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/35.jpg",
+        "https://s11.mkklcdnv6tempv4.com/mangakakalot/l2/lv999_no_murabito/chapter_48/36.jpg"
+    )
+}

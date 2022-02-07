@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.comicreader.comicray.R
 import com.comicreader.comicray.TestComicData
+import com.comicreader.comicray.TestMangaData
 import com.comicreader.comicray.databinding.FragmentMainBinding
 import com.comicreader.comicray.extensions.viewBinding
 import com.comicreader.comicray.ui.fragments.comics.ComicsFragment
@@ -14,10 +15,10 @@ import com.comicreader.comicray.ui.fragments.read.ReadFragment
 import com.kpstv.navigation.*
 import kotlin.reflect.KClass
 
-class MainFragment : ValueFragment(R.layout.fragment_main),FragmentNavigator.Transmitter {
+class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Transmitter {
 
-    private lateinit var navigator : FragmentNavigator
-    private lateinit var bottomNavController : BottomNavigationController
+    private lateinit var navigator: FragmentNavigator
+    private lateinit var bottomNavController: BottomNavigationController
 
     private val binding by viewBinding(FragmentMainBinding::bind)
 
@@ -30,24 +31,19 @@ class MainFragment : ValueFragment(R.layout.fragment_main),FragmentNavigator.Tra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        navigator = FragmentNavigator.with(this,savedInstanceState)
+        navigator = FragmentNavigator.with(this, savedInstanceState)
             .initialize(binding.fragmentContainer)
 
-        bottomNavController = navigator.install(object : FragmentNavigator.BottomNavigation(){
-            // The @IdRes of the BottomNavigationView
+        bottomNavController = navigator.install(object : FragmentNavigator.BottomNavigation() {
             override val bottomNavigationViewId: Int = R.id.bottom_nav_view
-
             override val bottomNavigationFragments: Map<Int, KClass<out Fragment>> =
                 mapOf(
                     R.id.Comics to ComicsFragment::class,
                     R.id.Manga to MangaFragment::class,
                     R.id.Search to DiscoverFragment::class,
                 )
-
-            // Slide from left/right animation when selection is changed.
             override val fragmentNavigationTransition = Animation.SlideHorizontally
         })
-
 
         // TODO(KP): Remove this code once detail screens are implemented.
 
@@ -66,7 +62,17 @@ class MainFragment : ValueFragment(R.layout.fragment_main),FragmentNavigator.Tra
         }
 
         binding.testMangaRead.setOnClickListener {
-
+            val options = FragmentNavigator.NavOptions(
+                args = ReadFragment.Args(
+                    title = TestMangaData.title,
+                    episodeTitle = TestMangaData.issueTitle,
+                    url = TestMangaData.url,
+                    imageList = TestMangaData.imageList
+                ),
+                animation = AnimationDefinition.Fade,
+                remember = true
+            )
+            getParentNavigator().navigateTo(ReadFragment::class, options)
         }
     }
 

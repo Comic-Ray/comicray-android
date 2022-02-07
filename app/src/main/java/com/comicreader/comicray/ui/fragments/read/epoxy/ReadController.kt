@@ -15,7 +15,7 @@ class ReadController : EpoxyController() {
 
     override fun buildModels() {
         for(image in imageList) {
-            readImageView {
+            readImage {
                 id(image.hashCode())
                 imageUrl(image)
             }
