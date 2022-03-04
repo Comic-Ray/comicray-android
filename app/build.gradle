@@ -3,15 +3,16 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'kotlin-parcelize'
 }
 
 android {
-    compileSdk 30
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.comicreader.comicray"
         minSdk 21
-        targetSdk 30
+        targetSdk 31
         versionCode 1
         versionName "1.0"
 
@@ -38,7 +39,7 @@ android {
                 "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
                 "-Xuse-experimental=kotlinx.coroutines.ObsoleteCoroutinesApi"]
     }
-    compileSdkVersion 30
+    compileSdk 31
 }
 
 dependencies {
@@ -57,7 +58,7 @@ dependencies {
     final glide_version = '4.12.0'
     final room_version = '2.4.0-alpha04'
     final swipeLayout_version = '1.1.0'
-    final lifecycle_version = '2.3.1'
+    final lifecycle_version = '2.4.1'
 
 
     //dagger Hilt Dependency
@@ -98,15 +99,16 @@ dependencies {
 
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt'
 
     //shimmer
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
     //flow
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha03"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-alpha02"
 }
 kapt {
     correctErrorTypes true
