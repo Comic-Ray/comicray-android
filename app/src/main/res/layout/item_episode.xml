@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background_color"
+    android:backgroundTint="@color/card_background_color"
+    >
+
+    <ImageView
+        android:id="@+id/imgView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        tools:src = "@color/white"/>
+
+    <TextView
+        android:id="@+id/chapterNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/imgView"
+        android:layout_marginStart="@dimen/dimen_5dp"
+        tools:text = "Chapter 28999"
+        android:layout_marginTop="@dimen/dimen_5dp"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/dateUploaded"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chapterNumber"
+        android:layout_margin="@dimen/dimen_5dp"
+        android:layout_toEndOf="@+id/imgView"
+        android:textColor="#A0A0A0"
+        android:textSize="16sp"
+        tools:text= "sbahj date"/>
+
+</RelativeLayout>

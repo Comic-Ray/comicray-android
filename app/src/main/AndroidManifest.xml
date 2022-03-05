@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ComicRay">
+        android:theme="@style/ComicRay">
         <activity android:name=".ui.activities.MainActivity"
             android:exported="true"
             >
