@@ -7,15 +7,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.comicreader.comicray.R
 import com.comicreader.comicray.adapters.ComicAdapter
 import com.comicreader.comicray.controllers.MainScreenController
 import com.comicreader.comicray.databinding.FragmentComicsBinding
-import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.ValueFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -56,7 +53,7 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
                     }
                 }
 
-            //OLD Working IMPL
+                //OLD Working IMPL
 
 //            launch {
 //                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -93,25 +90,25 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
 //                }
 //            }
 
-            launch {
-                viewModel.getFeaturedComics().collect {
-                    controller.setFeaturedComics(it.data!!)
+                launch {
+                    viewModel.getFeaturedComics().collect {
+                        controller.setFeaturedComics(it.data!!)
+                    }
                 }
-            }
 
-            launch {
-                viewModel.getPopularComics().collect {
-
+                launch {
+                    viewModel.getPopularComics().collect {
+                        controller.setPopularComics(it.data?.data!!)
+                    }
                 }
-            }
 
-            launch {
-                viewModel.getActionComics().collect {
-
+                launch {
+                    viewModel.getActionComics().collect {
+                        controller.setActionComics(it.data?.data!!)
+                    }
                 }
-            }
 
-        }
+            }
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -119,7 +116,6 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
             binding.swipeRefreshLayout.isRefreshing = false
         }
     }
-
 
 
     override fun onStart() {
