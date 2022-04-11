@@ -12,11 +12,6 @@ import com.comicreader.comicray.utils.ComicGenres
 
 class ComicAdapter : RecyclerView.Adapter<ComicAdapter.ComicViewHolder>() {
 
-//    private lateinit var resource1 : Resource<List<FeaturedComic>>
-//    private lateinit var finalList : List<FeaturedComic>
-
-//    private val rpool = object : RecyclerView.RecycledViewPool()
-
     private val differCallBack = object : DiffUtil.ItemCallback<CustomData>() {
         override fun areItemsTheSame(oldItem: CustomData, newItem: CustomData): Boolean {
             return oldItem.title == newItem.title
@@ -53,8 +48,6 @@ class ComicAdapter : RecyclerView.Adapter<ComicAdapter.ComicViewHolder>() {
                 it.value
             })
     }
-
-
 
     override fun getItemCount(): Int {
         return differ.currentList.size

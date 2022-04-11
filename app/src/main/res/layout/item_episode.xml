@@ -4,8 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/background_color"
-    android:backgroundTint="@color/card_background_color"
-    >
+    android:backgroundTint="@color/card_background_color">
 
     <ImageView
         android:id="@+id/imgView"
@@ -28,10 +27,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/chapterNumber"
-        android:layout_margin="@dimen/dimen_5dp"
+        android:layout_marginStart="@dimen/dimen_5dp"
+        android:layout_marginTop="@dimen/dimen_5dp"
+        android:layout_marginEnd="@dimen/dimen_5dp"
+        android:layout_marginBottom="@dimen/dimen_5dp"
         android:layout_toEndOf="@+id/imgView"
         android:textColor="#A0A0A0"
         android:textSize="16sp"
-        tools:text= "sbahj date"/>
+        tools:text="sbahj date" />
 
 </RelativeLayout>

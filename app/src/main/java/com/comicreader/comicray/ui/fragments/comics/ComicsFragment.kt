@@ -10,6 +10,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.comicreader.comicray.R
 import com.comicreader.comicray.adapters.ComicAdapter
+import com.comicreader.comicray.controllers.MainScreenController
 import com.comicreader.comicray.databinding.FragmentComicsBinding
 import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.ValueFragment
@@ -27,78 +28,100 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
 
     private lateinit var adapter: ComicAdapter
 
+    private lateinit var controller: MainScreenController
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentComicsBinding.bind(view)
 
-        setupRecView()
-
-//        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-//            viewModel.collectionComicsFlow.collect {
-//                adapter.submitList(it)
-//            }
-//        }
-
-//        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-//            viewModel.collectionF.collect {
-//                adapter.submitList(it)
-//            }
-//        }
-
-//        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-//            viewModel.featuredComics.collect {
-//                binding.progressbar.isVisible = it is Resource.Loading
-//                binding.featuredRecView.isVisible = it !is Resource.Loading
-//                binding.swipeRefreshLayout.isRefreshing = it is Resource.Loading
-//            }
-//        }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.events.collect {
-                when (it) {
-                    is ComicsViewModel.Event.ShowErrorMessage ->
-                        Toast.makeText(context, it.error.localizedMessage, Toast.LENGTH_SHORT)
-                            .show()
-                }
-            }
-        }
+        controller = MainScreenController()
+        binding.recView.setController(controller)
+        binding.recView.setHasFixedSize(true)
 
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.getAllComics().collect {
-                    adapter.submitList(it)
-                    adapter.notifyDataSetChanged()
-                }
-            }
-        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.isBusy.collect {
-                    when(it){
-                        is Resource.Loading -> Toast.makeText(context, "Loading", Toast.LENGTH_SHORT)
-                            .show()
-                        is Resource.Success -> Toast.makeText(context, "Success ${it.data}", Toast.LENGTH_SHORT)
-                            .show()
-                        is Resource.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT)
-                            .show()
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.events.collect {
+                        when (it) {
+                            is ComicsViewModel.Event.ShowErrorMessage ->
+                                Toast.makeText(
+                                    context,
+                                    it.error.localizedMessage,
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                        }
                     }
                 }
+
+            //OLD Working IMPL
+
+//            launch {
+//                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                    viewModel.getAllComics().collect {
+//                        adapter.submitList(it)
+//                        adapter.notifyDataSetChanged()
+//                    }
+//                }
+//            }
+//
+//            launch {
+//                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                    viewModel.isBusy.collect {
+//                        when (it) {
+//                            is Resource.Loading -> Toast.makeText(
+//                                context,
+//                                "Loading",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//
+//                            is Resource.Success -> Toast.makeText(
+//                                context,
+//                                "Success ${it.data}",
+//                                Toast.LENGTH_SHORT
+//                            )
+//                                .show()
+//                            is Resource.Error -> Toast.makeText(
+//                                context,
+//                                "Error",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                        }
+//                    }
+//                }
+//            }
+
+            launch {
+                viewModel.getFeaturedComics().collect {
+                    controller.setFeaturedComics(it.data!!)
+                    binding.recView.requestModelBuild()
+                    controller.requestModelBuild()
+                }
             }
+
+            launch {
+                viewModel.getPopularComics().collect {
+
+                }
+            }
+
+            launch {
+                viewModel.getActionComics().collect {
+
+                }
+            }
+
+        }
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.onManuelRefresh()
+            binding.swipeRefreshLayout.isRefreshing = false
         }
     }
 
-    private fun setupRecView() {
-        adapter = ComicAdapter()
-        binding.featuredRecView.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding.featuredRecView.adapter = adapter
-    }
 
 
     override fun onStart() {

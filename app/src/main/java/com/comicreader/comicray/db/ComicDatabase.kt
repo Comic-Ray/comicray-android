@@ -14,7 +14,7 @@ import com.comicreader.comicray.utils.Converters
 @Database(
     entities = [FeaturedComic::class, CompletedComic::class, OngoingComic::class,CustomData::class,GenreResponse::class],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class ComicDatabase : RoomDatabase() {

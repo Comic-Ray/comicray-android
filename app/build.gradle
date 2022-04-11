@@ -17,6 +17,13 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation":
+                                      "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildFeatures {
@@ -59,6 +66,7 @@ dependencies {
     final room_version = '2.4.0-alpha04'
     final swipeLayout_version = '1.1.0'
     final lifecycle_version = '2.4.1'
+    final epoxyVersion = "5.0.0-beta05"
 
 
     //dagger Hilt Dependency
@@ -109,6 +117,10 @@ dependencies {
 
     //flow
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-alpha02"
+
+    //epoxy
+    implementation "com.airbnb.android:epoxy:$epoxyVersion"
+    kapt "com.airbnb.android:epoxy-processor:$epoxyVersion"
 }
 kapt {
     correctErrorTypes true
