@@ -96,8 +96,6 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
             launch {
                 viewModel.getFeaturedComics().collect {
                     controller.setFeaturedComics(it.data!!)
-                    binding.recView.requestModelBuild()
-                    controller.requestModelBuild()
                 }
             }
 

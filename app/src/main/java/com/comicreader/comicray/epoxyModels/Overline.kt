@@ -14,7 +14,7 @@ abstract class Overline : EpoxyModelWithHolder<Overline.viewHolder>() {
     @EpoxyAttribute
     open var value: String? = null
 
-    @EpoxyAttribute
+    @EpoxyAttribute(EpoxyAttribute.Option.IgnoreRequireHashCode)
     open var listener: View.OnClickListener? = null
 
     override fun bind(holder: viewHolder) {

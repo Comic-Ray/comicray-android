@@ -21,7 +21,7 @@ abstract class CardModel() : EpoxyModelWithHolder<CardModel.CardViewHolder>() {
     @EpoxyAttribute
     open var urlToDetails: String? = null
 
-    @EpoxyAttribute
+    @EpoxyAttribute(value = [EpoxyAttribute.Option.IgnoreRequireHashCode])
     open var listener: View.OnClickListener?=null
 
     override fun bind(holder: CardViewHolder) {
