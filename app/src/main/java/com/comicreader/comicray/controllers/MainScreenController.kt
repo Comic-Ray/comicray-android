@@ -33,6 +33,7 @@ class MainScreenController : AsyncEpoxyController() {
 
 
     override fun buildModels() {
+        Carousel.setDefaultGlobalSnapHelperFactory(null)
         if (featuredComics.isNotEmpty()) {
             overline {
                 id("featuredComic")
@@ -49,7 +50,6 @@ class MainScreenController : AsyncEpoxyController() {
 
                         }
                 })
-                Carousel.setDefaultGlobalSnapHelperFactory(null)
             }
         }
 
@@ -69,7 +69,6 @@ class MainScreenController : AsyncEpoxyController() {
 
                         }
                 })
-                Carousel.setDefaultGlobalSnapHelperFactory(null)
             }
 
         }
@@ -90,7 +89,6 @@ class MainScreenController : AsyncEpoxyController() {
 
                         }
                 })
-                Carousel.setDefaultGlobalSnapHelperFactory(null)
             }
         }
 
