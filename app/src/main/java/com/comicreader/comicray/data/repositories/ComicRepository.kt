@@ -131,9 +131,8 @@ class ComicRepository @Inject constructor(
             if (forceRefresh){
                 true
             }else {
-//                val data = genreResponse.data.isEmpty()
-//                data
-                true
+                val data = genreResponse.data.isEmpty()
+                data
             }
         },
         onFetchSuccess = fetchSuccess,

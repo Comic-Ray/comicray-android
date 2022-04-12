@@ -1,9 +1,6 @@
 package com.comicreader.comicray.controllers
 
-import com.airbnb.epoxy.AsyncEpoxyController
-import com.airbnb.epoxy.CarouselModelBuilder
-import com.airbnb.epoxy.EpoxyModel
-import com.airbnb.epoxy.carousel
+import com.airbnb.epoxy.*
 import com.comicreader.comicray.data.models.custom.ComicDetails
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
 import com.comicreader.comicray.epoxyModels.CardModel_
@@ -52,7 +49,7 @@ class MainScreenController : AsyncEpoxyController() {
 
                         }
                 })
-                numViewsToShowOnScreen(2.1f)
+                Carousel.setDefaultGlobalSnapHelperFactory(null)
             }
         }
 
@@ -72,7 +69,7 @@ class MainScreenController : AsyncEpoxyController() {
 
                         }
                 })
-                numViewsToShowOnScreen(2.1f)
+                Carousel.setDefaultGlobalSnapHelperFactory(null)
             }
 
         }
@@ -93,7 +90,7 @@ class MainScreenController : AsyncEpoxyController() {
 
                         }
                 })
-                numViewsToShowOnScreen(2.1f)
+                Carousel.setDefaultGlobalSnapHelperFactory(null)
             }
         }
 
