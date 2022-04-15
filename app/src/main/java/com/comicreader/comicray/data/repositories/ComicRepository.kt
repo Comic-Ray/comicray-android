@@ -21,50 +21,6 @@ class ComicRepository @Inject constructor(
     private val comicDb: ComicDatabase
 ) {
 
-//    fun getFeaturedComics(dbOnly: Boolean): Flow<List<FeaturedComic>> {
-//        val dbFlow = comicDb
-//            .homeComicDao()
-//            .getFeaturedComics()
-//            .flowOn(Dispatchers.IO)
-//
-//        val apiFLow = flow {
-//            val res = comicApi.getFeaturedComics()
-//            if (res.isSuccessful && res.body() != null) {
-//                comicDb.homeComicDao().deleteFeaturedComics()
-//                val featuredComics = res.body()
-//                if (featuredComics != null) {
-//                    comicDb.homeComicDao().insertFeaturedComics(featuredComics)
-//                }
-//                emit(featuredComics)
-//            } else {
-//                error(res.message())
-//            }
-//        }.flowOn(Dispatchers.IO)
-//
-//        return if (dbOnly) {
-//            dbFlow
-//        } else {
-//            dbFlow.combine(apiFLow) { db, api ->
-//                db
-//            }.flowOn(Dispatchers.IO)
-//        }
-//    }
-
-//    suspend fun callMe(){
-//        val d = comicApi.getGenreComics("action-comic",1)
-//        val c = GenreResponse(tag = "abc",data = d.data,page = d.page,totalPages = d.totalPages)
-//        comicDb.homeComicDao().deleteGenreComicsResponse("abc")
-////        comicDb.homeComicDao().getGenreComicsResponse("abc").collect {
-////            Log.d("TAGG", "callMe After Deleted: ${it} ")
-////        }
-//        comicDb.homeComicDao().insertGenreComicsResponse(c)
-////        Log.d("TAGG", "callMe:  ${c}")
-//        comicDb.homeComicDao().getGenreComicsResponse("abc").collect {
-//            Log.d("TAGG", "callMe After Inserted: ${it} ")
-//        }
-//
-//    }
-
     fun getFeaturedComics(
         forceRefresh : Boolean,
         fetchSuccess: () -> Unit,
@@ -131,8 +87,12 @@ class ComicRepository @Inject constructor(
             if (forceRefresh){
                 true
             }else {
-                val data = genreResponse.data.isEmpty()
-                data
+                if (genreResponse!=null) {
+                    val data = genreResponse.data.isEmpty()
+                    data
+                }else{
+                    true
+                }
             }
         },
         onFetchSuccess = fetchSuccess,

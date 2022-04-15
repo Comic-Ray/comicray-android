@@ -11,6 +11,7 @@ import com.comicreader.comicray.R
 import com.comicreader.comicray.adapters.ComicAdapter
 import com.comicreader.comicray.controllers.MainScreenController
 import com.comicreader.comicray.databinding.FragmentComicsBinding
+import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.ValueFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -55,59 +56,39 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
 
                 //OLD Working IMPL
 
-//            launch {
-//                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                    viewModel.getAllComics().collect {
-//                        adapter.submitList(it)
-//                        adapter.notifyDataSetChanged()
-//                    }
-//                }
-//            }
-//
-//            launch {
-//                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                    viewModel.isBusy.collect {
-//                        when (it) {
-//                            is Resource.Loading -> Toast.makeText(
-//                                context,
-//                                "Loading",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//
-//                            is Resource.Success -> Toast.makeText(
-//                                context,
-//                                "Success ${it.data}",
-//                                Toast.LENGTH_SHORT
-//                            )
-//                                .show()
-//                            is Resource.Error -> Toast.makeText(
-//                                context,
-//                                "Error",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-//                    }
-//                }
-//            }
-
                 launch {
-                    viewModel.getFeaturedComics().collect {
-                        controller.setFeaturedComics(it.data!!)
+                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        viewModel.getAllComics().collect {
+                            controller.submitList(it)
+                        }
                     }
                 }
 
                 launch {
-                    viewModel.getPopularComics().collect {
-                        controller.setPopularComics(it.data?.data!!)
+                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        viewModel.isBusy.collect {
+                            when (it) {
+                                is Resource.Loading -> Toast.makeText(
+                                    context,
+                                    "Loading",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                is Resource.Success -> Toast.makeText(
+                                    context,
+                                    "Success",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                                is Resource.Error -> Toast.makeText(
+                                    context,
+                                    "Error",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
                     }
                 }
-
-                launch {
-                    viewModel.getActionComics().collect {
-                        controller.setActionComics(it.data?.data!!)
-                    }
-                }
-
             }
         }
 
@@ -128,3 +109,23 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
         super.onDestroy()
     }
 }
+
+
+//New Impl
+//                launch {
+//                    viewModel.getFeaturedComics().collect {
+//                        controller.setFeaturedComics(it.data!!)
+//                    }
+//                }
+//
+//                launch {
+//                    viewModel.getPopularComics().collect {
+//                        controller.setPopularComics(it.data?.data!!)
+//                    }
+//                }
+//
+//                launch {
+//                    viewModel.getActionComics().collect {
+//                        controller.setActionComics(it.data?.data!!)
+//                    }
+//                }

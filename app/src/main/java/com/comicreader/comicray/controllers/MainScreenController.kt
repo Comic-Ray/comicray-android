@@ -2,14 +2,16 @@ package com.comicreader.comicray.controllers
 
 import com.airbnb.epoxy.*
 import com.comicreader.comicray.data.models.custom.ComicDetails
+import com.comicreader.comicray.data.models.custom.CustomData
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
 import com.comicreader.comicray.epoxyModels.CardModel_
 import com.comicreader.comicray.epoxyModels.overline
+import com.comicreader.comicray.utils.ComicGenres
 import java.util.concurrent.CopyOnWriteArrayList
 
 class MainScreenController : AsyncEpoxyController() {
 
-    private var featuredComics: CopyOnWriteArrayList<FeaturedComic> = CopyOnWriteArrayList()
+    private var featuredComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
     private var popularComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
     private var actionComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
 
@@ -27,7 +29,18 @@ class MainScreenController : AsyncEpoxyController() {
 
     fun setFeaturedComics(data: List<FeaturedComic>) {
         featuredComics.clear()
-        featuredComics.addAll(data)
+//        featuredComics.addAll(data)
+        requestModelBuild()
+    }
+
+    fun submitList(data: Map<ComicGenres, CustomData>){
+        featuredComics.clear()
+        actionComics.clear()
+        popularComics.clear()
+
+        data[ComicGenres.Featured]?.let { featuredComics.addAll(it.comics) }
+        data[ComicGenres.Action]?.let { actionComics.addAll(it.comics) }
+        data[ComicGenres.Popular]?.let { popularComics.addAll(it.comics) }
         requestModelBuild()
     }
 
@@ -43,7 +56,7 @@ class MainScreenController : AsyncEpoxyController() {
             carousel {
                 id("id-feat-comics")
                 models(this@MainScreenController.featuredComics.map { item ->
-                    CardModel_().id("featured-comics-id:" + item.id + item.title)
+                    CardModel_().id("featured-comics-id:" + item.title)
                         .title(item.title)
                         .urlToImage(item.imageUrl)
                         .listener { _ ->

@@ -39,24 +39,24 @@ class ComicsViewModel @Inject constructor(
 
 
     private val refreshTriggerChannel = Channel<Refresh>()
-    private val refreshTrigger get() = refreshTriggerChannel.receiveAsFlow()
+     val refreshTrigger get() = refreshTriggerChannel.receiveAsFlow()
 
     private val list = HashMap<ComicGenres, CustomData>()
 
     init {
-//        viewModelScope.launch {
-//            _isBusy.send(Resource.Loading())
-//        }
-        Log.d("TAGG", "onStart: Viewmodel init")
+        viewModelScope.launch {
+            _isBusy.send(Resource.Loading())
+        }
     }
 
-// Working Old Impl
+    // Working Old Impl
     fun getAllComics(): Flow<Map<ComicGenres, CustomData>> = channelFlow {
         refreshTrigger.flatMapLatest { trigger ->
 
             if (trigger == Refresh.Force) {
                 _isBusy.send(Resource.Loading())
             }
+            Log.d("TAGG", "getAllComics: $trigger")
 
             val featuredFlow = comicRepository.getFeaturedComics(
                 forceRefresh = trigger == Refresh.Force,
@@ -173,7 +173,7 @@ class ComicsViewModel @Inject constructor(
         }
     }
 
-    fun getPopularComics()= channelFlow {
+    fun getPopularComics() = channelFlow {
         refreshTrigger.flatMapLatest { trigger ->
 
             comicRepository.getGenreComics(
@@ -196,18 +196,13 @@ class ComicsViewModel @Inject constructor(
 
     fun onManuelRefresh() {
         viewModelScope.launch {
-//            if (_isBusy.receive() !is Resource.Loading) {
             refreshTriggerChannel.send(Refresh.Force)
-//            }
         }
     }
 
     fun onStart() {
         viewModelScope.launch {
-//            if (_isBusy.receive() is Resource.Loading) {
             refreshTriggerChannel.send(Refresh.Normal)
-//            }
-            Log.d("TAGG", "onStart: Viewmodel OnStart")
         }
     }
 
@@ -231,29 +226,3 @@ class ComicsViewModel @Inject constructor(
     }
 }
 
-
-// OLD IMPL
-//private val actionComics = refreshTrigger.flatMapLatest {
-//    comicRepository.getGenreComics(
-//        forceRefresh = true,
-//        tag = "action-comic",
-//        fetchSuccess = {},
-//        onFetchFailed = { throwable ->
-//            viewModelScope.launch {
-//                eventChannel.send(Event.ShowErrorMessage(throwable))
-//            }
-//        }
-//    )
-//}.stateIn(viewModelScope, SharingStarted.Lazily, null)
-//
-//val featuredComics = refreshTrigger.flatMapLatest {
-//    comicRepository.getFeaturedComics(
-//        forceRefresh = it == Refresh.Force,
-//        fetchSuccess = {},
-//        onFetchFailed = { throwable ->
-//            viewModelScope.launch {
-//                eventChannel.send(Event.ShowErrorMessage(throwable))
-//            }
-//        }
-//    )
-//}.stateIn(viewModelScope, SharingStarted.Lazily, null)
