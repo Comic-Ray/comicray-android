@@ -29,7 +29,11 @@ class MainScreenController : AsyncEpoxyController() {
 
     fun setFeaturedComics(data: List<FeaturedComic>) {
         featuredComics.clear()
-//        featuredComics.addAll(data)
+        featuredComics.addAll(data.map { ComicDetails(
+            title = it.title,
+            url = it.url,
+            imageUrl = it.imageUrl
+        ) })
         requestModelBuild()
     }
 

@@ -38,8 +38,8 @@ class ComicsViewModel @Inject constructor(
     val isBusy = _isBusy.receiveAsFlow()
 
 
-    private val refreshTriggerChannel = Channel<Refresh>()
-     val refreshTrigger get() = refreshTriggerChannel.receiveAsFlow()
+    private val refreshTriggerChannel = MutableSharedFlow<Refresh>()
+     val refreshTrigger get() = refreshTriggerChannel.asSharedFlow()
 
     private val list = HashMap<ComicGenres, CustomData>()
 
@@ -134,75 +134,54 @@ class ComicsViewModel @Inject constructor(
 
     //New impl
 
-    fun getFeaturedComics() = channelFlow {
-        refreshTrigger.flatMapLatest { trigger ->
-
-            comicRepository.getFeaturedComics(
-                forceRefresh = trigger == Refresh.Force,
-                fetchSuccess = {},
-                onFetchFailed = { t ->
-                    viewModelScope.launch {
-                        eventChannel.send(Event.ShowErrorMessage(t))
-                    }
+    fun getFeaturedComics() = refreshTrigger.flatMapLatest { trigger ->
+        comicRepository.getFeaturedComics(
+            forceRefresh = trigger == Refresh.Force,
+            fetchSuccess = {},
+            onFetchFailed = { t ->
+                viewModelScope.launch {
+                    eventChannel.send(Event.ShowErrorMessage(t))
                 }
-            )
-        }.collect {
-            if (it is Resource.Success) {
-                send(it)
             }
-        }
-    }
+        )
+    }.filter { it is Resource.Success }.mapNotNull { it.data }
 
-    fun getActionComics() = channelFlow {
-        refreshTrigger.flatMapLatest { trigger ->
-
-            comicRepository.getGenreComics(
-                forceRefresh = trigger == Refresh.Force,
-                tag = "action-comic",
-                fetchSuccess = {},
-                onFetchFailed = { throwable ->
-                    viewModelScope.launch {
-                        eventChannel.send(Event.ShowErrorMessage(throwable))
-                    }
+    fun getActionComics() = refreshTrigger.flatMapLatest { trigger ->
+        comicRepository.getGenreComics(
+            forceRefresh = trigger == Refresh.Force,
+            tag = "action-comic",
+            fetchSuccess = {},
+            onFetchFailed = { throwable ->
+                viewModelScope.launch {
+                    eventChannel.send(Event.ShowErrorMessage(throwable))
                 }
-            )
+            }
+        )
+    }.filter { it is Resource.Success }.mapNotNull { it.data }
 
-        }.collect {
-            if (it is Resource.Success)
-                send(it)
-        }
-    }
-
-    fun getPopularComics() = channelFlow {
-        refreshTrigger.flatMapLatest { trigger ->
-
-            comicRepository.getGenreComics(
-                forceRefresh = trigger == Refresh.Force,
-                tag = "popular-comic",
-                fetchSuccess = {},
-                onFetchFailed = { throwable ->
-                    viewModelScope.launch {
-                        eventChannel.send(Event.ShowErrorMessage(throwable))
-                    }
+    fun getPopularComics() = refreshTrigger.flatMapLatest { trigger ->
+        comicRepository.getGenreComics(
+            forceRefresh = trigger == Refresh.Force,
+            tag = "popular-comic",
+            fetchSuccess = {},
+            onFetchFailed = { throwable ->
+                viewModelScope.launch {
+                    eventChannel.send(Event.ShowErrorMessage(throwable))
                 }
-            )
-
-        }.collect {
-            if (it is Resource.Success)
-                send(it)
-        }
-    }
+            }
+        )
+    }.filter { it is Resource.Success }.mapNotNull { it.data }
 
 
     fun onManuelRefresh() {
         viewModelScope.launch {
-            refreshTriggerChannel.send(Refresh.Force)
+            refreshTriggerChannel.emit(Refresh.Force)
         }
     }
 
     fun onStart() {
         viewModelScope.launch {
-            refreshTriggerChannel.send(Refresh.Normal)
+            refreshTriggerChannel.emit(Refresh.Normal)
         }
     }
 

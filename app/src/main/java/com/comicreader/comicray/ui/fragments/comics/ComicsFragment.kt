@@ -14,6 +14,7 @@ import com.comicreader.comicray.databinding.FragmentComicsBinding
 import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.ValueFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -36,6 +37,17 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
         binding.recView.setController(controller)
         binding.recView.setHasFixedSize(true)
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getFeaturedComics().collect { controller.setFeaturedComics(it) }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getActionComics().collect { controller.setActionComics(it.data) }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getPopularComics().collect { controller.setPopularComics(it.data) }
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
 
@@ -56,13 +68,13 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
 
                 //OLD Working IMPL
 
-                launch {
-                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        viewModel.getAllComics().collect {
-                            controller.submitList(it)
-                        }
-                    }
-                }
+//                launch {
+//                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                        viewModel.getAllComics().collect {
+//                            controller.submitList(it)
+//                        }
+//                    }
+//                }
 
                 launch {
                     viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
