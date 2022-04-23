@@ -1,6 +1,7 @@
 package com.comicreader.comicray.controllers
 
 import com.airbnb.epoxy.*
+import com.comicreader.comicray.data.models.DataItem
 import com.comicreader.comicray.data.models.custom.ComicDetails
 import com.comicreader.comicray.data.models.custom.CustomData
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
@@ -11,42 +12,38 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 class MainScreenController : AsyncEpoxyController() {
 
-    private val featuredComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
-    private val popularComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
-    private val actionComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
+    private val featuredComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
+    private val popularComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
+    private val actionComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
 
-    fun setPopularComics(data: List<ComicDetails>) {
+    fun setPopularComics(data: List<DataItem>) {
         popularComics.clear()
         popularComics.addAll(data)
         requestModelBuild()
     }
 
-    fun setActionComics(data: List<ComicDetails>) {
+    fun setActionComics(data: List<DataItem>) {
         actionComics.clear()
         actionComics.addAll(data)
         requestModelBuild()
     }
 
-    fun setFeaturedComics(data: List<FeaturedComic>) {
+    fun setFeaturedComics(data: List<DataItem>) {
         featuredComics.clear()
-        featuredComics.addAll(data.map { ComicDetails(
-            title = it.title,
-            url = it.url,
-            imageUrl = it.imageUrl
-        ) })
+        featuredComics.addAll(data)
         requestModelBuild()
     }
 
-    fun submitList(data: Map<ComicGenres, CustomData>){
-        featuredComics.clear()
-        actionComics.clear()
-        popularComics.clear()
-
-        data[ComicGenres.Featured]?.let { featuredComics.addAll(it.comics) }
-        data[ComicGenres.Action]?.let { actionComics.addAll(it.comics) }
-        data[ComicGenres.Popular]?.let { popularComics.addAll(it.comics) }
-        requestModelBuild()
-    }
+//    fun submitList(data: Map<ComicGenres, CustomData>){
+//        featuredComics.clear()
+//        actionComics.clear()
+//        popularComics.clear()
+//
+//        data[ComicGenres.Featured]?.let { featuredComics.addAll(it.comics) }
+//        data[ComicGenres.Action]?.let { actionComics.addAll(it.comics) }
+//        data[ComicGenres.Popular]?.let { popularComics.addAll(it.comics) }
+//        requestModelBuild()
+//    }
 
     override fun buildModels() {
         Carousel.setDefaultGlobalSnapHelperFactory(null)
