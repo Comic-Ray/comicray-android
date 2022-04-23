@@ -83,8 +83,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
-    // integration with jetpack library
-    implementation 'androidx.hilt:hilt-navigation-fragment:1.0.0'
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
 
     // room
     implementation "androidx.room:room-runtime:$room_version"
@@ -92,8 +91,8 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
 
     // navigator
-    implementation 'io.github.kaustubhpatange:navigator:0.1-alpha29' // Core library (Required)
-    implementation "io.github.kaustubhpatange:navigator-extensions:0.6" // Optional but recommended
+    implementation 'io.github.kaustubhpatange:navigator:0.1-alpha36' // Core library (Required)
+    implementation "io.github.kaustubhpatange:navigator-extensions:0.7" // Optional but recommended
     implementation "io.github.kaustubhpatange:navigator-bottom-navigation:0.1-alpha18"
     // For setting up Bottom Navigation.
     implementation 'io.github.kaustubhpatange:navigator-tab-navigation:0.1-alpha12'
@@ -104,6 +103,9 @@ dependencies {
     //swipe refresh layout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeLayout_version"
 
+    // paging
+    //noinspection GradleDependency
+    implementation "androidx.paging:paging-runtime-ktx:2.1.2"
 
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
@@ -120,6 +122,7 @@ dependencies {
 
     //epoxy
     implementation "com.airbnb.android:epoxy:$epoxyVersion"
+    implementation "com.airbnb.android:epoxy-paging:$epoxyVersion"
     kapt "com.airbnb.android:epoxy-processor:$epoxyVersion"
 }
 kapt {

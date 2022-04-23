@@ -11,9 +11,9 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 class MainScreenController : AsyncEpoxyController() {
 
-    private var featuredComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
-    private var popularComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
-    private var actionComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
+    private val featuredComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
+    private val popularComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
+    private val actionComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
 
     fun setPopularComics(data: List<ComicDetails>) {
         popularComics.clear()
@@ -47,7 +47,6 @@ class MainScreenController : AsyncEpoxyController() {
         data[ComicGenres.Popular]?.let { popularComics.addAll(it.comics) }
         requestModelBuild()
     }
-
 
     override fun buildModels() {
         Carousel.setDefaultGlobalSnapHelperFactory(null)
