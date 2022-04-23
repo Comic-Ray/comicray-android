@@ -8,6 +8,7 @@ import com.comicreader.comicray.data.models.custom.CustomData
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
 import com.comicreader.comicray.data.repositories.ComicRepository
 import com.comicreader.comicray.utils.ComicGenres
+import com.comicreader.comicray.utils.Event
 import com.comicreader.comicray.utils.Refresh
 import com.comicreader.comicray.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -135,7 +136,6 @@ class ComicsViewModel @Inject constructor(
     }
 
     //New impl
-
     fun getFeaturedComics() = refreshTrigger.flatMapLatest { trigger ->
         comicRepository.getFeaturedComics(
             forceRefresh = trigger == Refresh.Force,
@@ -197,10 +197,6 @@ class ComicsViewModel @Inject constructor(
                 imageUrl = it.imageUrl
             )
         } ?: emptyList()
-    }
-
-    sealed class Event {
-        data class ShowErrorMessage(val error: Throwable) : Event()
     }
 
     override fun onCleared() {

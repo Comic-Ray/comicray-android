@@ -30,6 +30,15 @@ interface ComicApi {
         @Query("page") page : Int
     ) : GenreResponse
 
+    @Headers("Accept: application/json")
+    @GET("manga/Genre")
+    suspend fun getGenreManga(
+        @Query("type") tag : String = "Latest",
+        @Query("state") state : String =  "All",
+        @Query("category") category : String,
+        @Query("page") page : Int = 1
+    ) : GenreResponse
+
 
 
 

@@ -11,6 +11,8 @@ import com.comicreader.comicray.R
 import com.comicreader.comicray.adapters.ComicAdapter
 import com.comicreader.comicray.controllers.MainScreenController
 import com.comicreader.comicray.databinding.FragmentComicsBinding
+import com.comicreader.comicray.utils.Constants.Comics
+import com.comicreader.comicray.utils.Event
 import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.ValueFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +36,7 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
         _binding = FragmentComicsBinding.bind(view)
 
         controller = MainScreenController()
+        controller.submitType(Comics)
         binding.recView.setController(controller)
         binding.recView.setHasFixedSize(true)
 
@@ -55,7 +58,7 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
                 launch {
                     viewModel.events.collect {
                         when (it) {
-                            is ComicsViewModel.Event.ShowErrorMessage ->
+                            is Event.ShowErrorMessage ->
                                 Toast.makeText(
                                     context,
                                     it.error.localizedMessage,
@@ -67,7 +70,6 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
                 }
 
                 //OLD Working IMPL
-
 //                launch {
 //                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 //                        viewModel.getAllComics().collect {
@@ -75,32 +77,6 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
 //                        }
 //                    }
 //                }
-
-                launch {
-                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        viewModel.isBusy.collect {
-                            when (it) {
-                                is Resource.Loading -> Toast.makeText(
-                                    context,
-                                    "Loading",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-                                is Resource.Success -> Toast.makeText(
-                                    context,
-                                    "Success",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-                                is Resource.Error -> Toast.makeText(
-                                    context,
-                                    "Error",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    }
-                }
             }
         }
 
