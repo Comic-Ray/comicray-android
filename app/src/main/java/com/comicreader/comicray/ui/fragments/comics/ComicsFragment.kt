@@ -121,23 +121,3 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
         super.onDestroy()
     }
 }
-
-
-//New Impl
-//                launch {
-//                    viewModel.getFeaturedComics().collect {
-//                        controller.setFeaturedComics(it.data!!)
-//                    }
-//                }
-//
-//                launch {
-//                    viewModel.getPopularComics().collect {
-//                        controller.setPopularComics(it.data?.data!!)
-//                    }
-//                }
-//
-//                launch {
-//                    viewModel.getActionComics().collect {
-//                        controller.setActionComics(it.data?.data!!)
-//                    }
-//                }

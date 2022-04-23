@@ -71,6 +71,7 @@ class ComicsViewModel @Inject constructor(
             val actionFlow = comicRepository.getGenreComics(
                 forceRefresh = trigger == Refresh.Force,
                 tag = "action-comic",
+                type = "Comic",
                 fetchSuccess = {},
                 onFetchFailed = { throwable ->
                     viewModelScope.launch {
@@ -82,6 +83,7 @@ class ComicsViewModel @Inject constructor(
             val popularFlow = comicRepository.getGenreComics(
                 forceRefresh = trigger == Refresh.Force,
                 tag = "popular-comic",
+                type = "Comic",
                 fetchSuccess = {},
                 onFetchFailed = { throwable ->
                     viewModelScope.launch {
@@ -150,6 +152,7 @@ class ComicsViewModel @Inject constructor(
         comicRepository.getGenreComics(
             forceRefresh = trigger == Refresh.Force,
             tag = "action-comic",
+            type = "Comic",
             fetchSuccess = {},
             onFetchFailed = { throwable ->
                 viewModelScope.launch {
@@ -163,6 +166,7 @@ class ComicsViewModel @Inject constructor(
         comicRepository.getGenreComics(
             forceRefresh = trigger == Refresh.Force,
             tag = "popular-comic",
+            type = "Comic",
             fetchSuccess = {},
             onFetchFailed = { throwable ->
                 viewModelScope.launch {

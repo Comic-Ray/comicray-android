@@ -13,6 +13,7 @@ data class GenreResponse(
     val tag : String?,
     val data: List<ComicDetails>,
     val page: Int,
-    val totalPages: Int
+    val totalPages: Int,
+    val type: String
 ){
 }

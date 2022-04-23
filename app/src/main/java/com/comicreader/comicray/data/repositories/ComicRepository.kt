@@ -59,15 +59,15 @@ class ComicRepository @Inject constructor(
     )
 
 
-
     fun getGenreComics(
         forceRefresh : Boolean,
         tag : String,
+        type: String,
         fetchSuccess: () -> Unit,
         onFetchFailed : (Throwable) -> Unit
     ) : Flow<Resource<GenreResponse>> = networkBoundResource(
         query = {
-           val query = comicDb.homeComicDao().getGenreComicsResponse(tag)
+           val query = comicDb.homeComicDao().getGenreComicsResponse(tag, type)
             query
         },
         fetch = {
@@ -76,9 +76,9 @@ class ComicRepository @Inject constructor(
         },
         saveFetchResult = {
 //                val comicsWithTag = CustomData(tag, it.data)
-            val c = GenreResponse(tag = tag,data = it.data,page = it.page,totalPages = it.totalPages)
+            val c = GenreResponse(tag = tag,data = it.data,page = it.page,totalPages = it.totalPages, type = type)
                 comicDb.withTransaction {
-                    comicDb.homeComicDao().deleteGenreComicsResponse(tag)
+                    comicDb.homeComicDao().deleteGenreComicsResponse(tag, type)
 //                    comicDb.homeComicDao().insertGenreComics(comicsWithTag)
                     comicDb.homeComicDao().insertGenreComicsResponse(c)
                 }

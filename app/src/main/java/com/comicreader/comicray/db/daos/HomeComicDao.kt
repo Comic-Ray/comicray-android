@@ -44,10 +44,10 @@ interface HomeComicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGenreComicsResponse(data: GenreResponse)
 
-    @Query("SELECT * FROM GenreComics WHERE tag =:tag")
-    fun getGenreComicsResponse(tag: String): Flow<GenreResponse>
+    @Query("SELECT * FROM GenreComics WHERE tag =:tag AND type=:type")
+    fun getGenreComicsResponse(tag: String, type: String): Flow<GenreResponse>
 
-    @Query("DELETE FROM GenreComics WHERE tag =:tag")
-    suspend fun deleteGenreComicsResponse(tag: String)
+    @Query("DELETE FROM GenreComics WHERE tag =:tag AND type=:type")
+    suspend fun deleteGenreComicsResponse(tag: String, type: String)
 
 }
