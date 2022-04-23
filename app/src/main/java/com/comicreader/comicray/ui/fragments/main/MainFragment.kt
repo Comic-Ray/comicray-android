@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.comicreader.comicray.R
+import com.comicreader.comicray.data.models.GenreType
 import com.comicreader.comicray.databinding.FragmentMainBinding
 import com.comicreader.comicray.ui.fragments.comics.ComicsFragment
 import com.comicreader.comicray.ui.fragments.discover.DiscoverFragment
+import com.comicreader.comicray.ui.fragments.genre.GenreFragment.Companion.goToGenre
 import com.comicreader.comicray.ui.fragments.manga.MangaFragment
 import com.kpstv.navigation.BottomNavigationController
 import com.kpstv.navigation.FragmentNavigator
@@ -51,6 +53,9 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
             override val fragmentNavigationTransition = Animation.SlideHorizontally
         })
 
+        binding.btnGenre.setOnClickListener {
+            parentNavigator.goToGenre(name = "Action", tag = "action-comic", type = GenreType.Comic)
+        }
     }
 
     override fun onBackPressed(): Boolean {

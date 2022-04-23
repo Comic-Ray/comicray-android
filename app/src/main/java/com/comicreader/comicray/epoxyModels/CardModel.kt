@@ -33,7 +33,6 @@ abstract class CardModel() : EpoxyModelWithHolder<CardModel.CardViewHolder>() {
 
             root.setOnClickListener(listener)
 
-            shimmerLayout.hideShimmer()
         }
     }
 
