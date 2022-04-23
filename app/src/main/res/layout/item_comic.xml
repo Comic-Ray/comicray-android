@@ -6,42 +6,41 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dimen_5dp"
     android:layout_marginEnd="@dimen/dimen_5dp"
+    app:cardCornerRadius="5dp"
     app:cardElevation="@dimen/dimen_10dp">
 
     <com.facebook.shimmer.ShimmerFrameLayout
-        android:layout_width="match_parent"
         android:id="@+id/shimmerLayout"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/imgView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:scaleType="centerCrop"
-            tools:src="@mipmap/ic_launcher"
-            />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtView"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_30dp"
-            android:layout_marginTop="@dimen/dimen_4dp"
-            android:gravity="center_horizontal"
-            android:maxLines="2"
-            android:textSize="12.5sp"
-            android:textStyle="bold"
-            tools:text="sjcnsdjsjkcnsjsncelmrjnkjjnkvnkdvnkmdnvmjsc" />
+            <ImageView
+                android:id="@+id/imgView"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/ic_launcher" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/txtView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_30dp"
+                android:layout_marginTop="@dimen/dimen_4dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_horizontal"
+                android:maxLines="2"
+                android:textSize="12.5sp"
+                android:textStyle="bold"
+                tools:text="sjcnsdjsjkcnsjsncelmrjnkjjnkvnkdvnkmdnvmjsc" />
+
+        </LinearLayout>
 
     </com.facebook.shimmer.ShimmerFrameLayout>
-
-
 
 </com.google.android.material.card.MaterialCardView>
 

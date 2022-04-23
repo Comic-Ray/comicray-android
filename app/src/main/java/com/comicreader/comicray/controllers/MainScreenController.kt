@@ -1,15 +1,12 @@
 package com.comicreader.comicray.controllers
 
-import com.airbnb.epoxy.AsyncEpoxyController
-import com.airbnb.epoxy.Carousel
-import com.airbnb.epoxy.carousel
+import com.airbnb.epoxy.*
 import com.comicreader.comicray.data.models.custom.ComicDetails
 import com.comicreader.comicray.data.models.custom.CustomData
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
 import com.comicreader.comicray.epoxyModels.CardModel_
 import com.comicreader.comicray.epoxyModels.overline
 import com.comicreader.comicray.utils.ComicGenres
-import com.comicreader.comicray.utils.Constants.Comics
 import java.util.concurrent.CopyOnWriteArrayList
 
 class MainScreenController : AsyncEpoxyController() {

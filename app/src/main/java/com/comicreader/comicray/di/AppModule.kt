@@ -3,6 +3,7 @@ package com.comicreader.comicray.di
 import android.content.Context
 import androidx.room.Room
 import com.comicreader.comicray.api.ComicApi
+import com.comicreader.comicray.api.MangaApi
 import com.comicreader.comicray.db.ComicDatabase
 import com.comicreader.comicray.utils.Constants.BASE_URL
 import dagger.Module
@@ -32,6 +33,14 @@ object AppModule {
             .connectTimeout(5, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor { chain ->
+                val request = chain.request()
+                val newRequest = request.newBuilder()
+                    .addHeader("Accept", "application/json")
+                    //.addHeader("referer", "https://mangakakalot.com")
+                    .build()
+                return@addInterceptor chain.proceed(newRequest)
+            }
             .addInterceptor(interceptor)
             .build()
     }
@@ -61,6 +70,12 @@ object AppModule {
     @Provides
     fun provideComicApi(retrofit: Retrofit): ComicApi {
         return retrofit.create(ComicApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideMangaApi(retrofit: Retrofit): MangaApi {
+        return retrofit.create(MangaApi::class.java)
     }
 
     @Singleton

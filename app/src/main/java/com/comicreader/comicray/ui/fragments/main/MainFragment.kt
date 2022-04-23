@@ -14,7 +14,7 @@ import com.kpstv.navigation.ValueFragment
 import com.kpstv.navigation.install
 import kotlin.reflect.KClass
 
-class MainFragment : ValueFragment(R.layout.fragment_main),FragmentNavigator.Transmitter {
+class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Transmitter {
 
     private lateinit var navigator : FragmentNavigator
     private lateinit var bottomNavController : BottomNavigationController

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f1fae644521a4e5df0390067b8076315",
+    "identityHash": "df96982bc905ab117efab503f7517e84",
     "entities": [
       {
         "tableName": "FeaturedComics",
