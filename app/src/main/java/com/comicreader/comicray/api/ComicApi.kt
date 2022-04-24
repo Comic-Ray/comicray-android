@@ -48,4 +48,10 @@ interface ComicApi {
 
     @GET("v1/comic/Genre/list")
     suspend fun getGenreList() : List<Genre.Comic>
+
+    @GET("v1/comic/search")
+    suspend fun getSearch(
+        @Query("query") query: String,
+        @Query("page") page: Int
+    ): ComicSearchResponse
 }

@@ -119,4 +119,13 @@ class ComicRepository @Inject constructor(
         }
     }
 
+    fun getGenreList() : Flow<Resource<List<Genre.Comic>>> = networkBoundResource(
+        query = { comicDb.homeComicDao().getComicGenreList() },
+        fetch = { comicApi.getGenreList() },
+        saveFetchResult = { comicDb.homeComicDao().saveComicGenreList(it) },
+        shouldFetch = { it.firstOrNull()?.isExpired() ?: true },
+        onFetchFailed = {},
+        onFetchSuccess = {}
+    )
+
 }
