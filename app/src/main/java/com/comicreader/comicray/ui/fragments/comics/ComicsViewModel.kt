@@ -11,6 +11,7 @@ import com.comicreader.comicray.data.models.custom.toDataItem
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
 import com.comicreader.comicray.data.repositories.ComicRepository
 import com.comicreader.comicray.utils.ComicGenres
+import com.comicreader.comicray.utils.Event
 import com.comicreader.comicray.utils.Refresh
 import com.comicreader.comicray.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -206,10 +207,6 @@ class ComicsViewModel @Inject constructor(
                 imageUrl = it.imageUrl
             ).toDataItem()
         } ?: emptyList()
-    }
-
-    sealed class Event {
-        data class ShowErrorMessage(val error: Throwable) : Event()
     }
 
     override fun onCleared() {

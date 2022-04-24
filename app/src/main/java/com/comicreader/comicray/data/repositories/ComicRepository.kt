@@ -1,20 +1,16 @@
 package com.comicreader.comicray.data.repositories
 
-import android.util.Log
 import androidx.room.withTransaction
 import com.comicreader.comicray.api.ComicApi
-import com.comicreader.comicray.data.models.custom.CustomData
 import com.comicreader.comicray.data.models.custom.GenreResponse
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
 import com.comicreader.comicray.db.ComicDatabase
 import com.comicreader.comicray.utils.Resource
 import com.comicreader.comicray.utils.networkBoundResource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.math.log
 
 class ComicRepository @Inject constructor(
     private val comicApi: ComicApi,
@@ -22,9 +18,9 @@ class ComicRepository @Inject constructor(
 ) {
 
     fun getFeaturedComics(
-        forceRefresh : Boolean,
+        forceRefresh: Boolean,
         fetchSuccess: () -> Unit,
-        onFetchFailed : (Throwable) -> Unit
+        onFetchFailed: (Throwable) -> Unit
     ): Flow<Resource<List<FeaturedComic>>> = networkBoundResource(
         query = {
             val query = comicDb.homeComicDao().getFeaturedComics()
@@ -41,9 +37,9 @@ class ComicRepository @Inject constructor(
             }
         },
         shouldFetch = { featuredComics -> //it : List<FeaturedComic>
-            if(forceRefresh){
+            if (forceRefresh) {
                 true
-            }else{
+            } else {
                 //todo refresh the data after sometimes
                 val cachedComics = featuredComics.isEmpty()
                 cachedComics
@@ -60,37 +56,43 @@ class ComicRepository @Inject constructor(
 
 
     fun getGenreComics(
-        forceRefresh : Boolean,
-        tag : String,
+        forceRefresh: Boolean,
+        tag: String,
         type: String,
         fetchSuccess: () -> Unit,
-        onFetchFailed : (Throwable) -> Unit
-    ) : Flow<Resource<GenreResponse>> = networkBoundResource(
+        onFetchFailed: (Throwable) -> Unit
+    ): Flow<Resource<GenreResponse>> = networkBoundResource(
         query = {
-           val query = comicDb.homeComicDao().getGenreComicsResponse(tag, type)
+            val query = comicDb.homeComicDao().getGenreComicsResponse(tag, type)
             query
         },
         fetch = {
-           val data = comicApi.getGenreComics(tag,1)
+            val data = comicApi.getGenreComics(tag, 1)
             data
         },
         saveFetchResult = {
 //                val comicsWithTag = CustomData(tag, it.data)
-            val c = GenreResponse(tag = tag,data = it.data,page = it.page,totalPages = it.totalPages, type = type)
-                comicDb.withTransaction {
-                    comicDb.homeComicDao().deleteGenreComicsResponse(tag, type)
+            val c = GenreResponse(
+                tag = tag,
+                data = it.data,
+                page = it.page,
+                totalPages = it.totalPages,
+                Comictype = type
+            )
+            comicDb.withTransaction {
+                comicDb.homeComicDao().deleteGenreComicsResponse(tag, type)
 //                    comicDb.homeComicDao().insertGenreComics(comicsWithTag)
-                    comicDb.homeComicDao().insertGenreComicsResponse(c)
-                }
+                comicDb.homeComicDao().insertGenreComicsResponse(c)
+            }
         },
-        shouldFetch = {genreResponse ->
-            if (forceRefresh){
+        shouldFetch = { genreResponse ->
+            if (forceRefresh) {
                 true
-            }else {
-                if (genreResponse!=null) {
+            } else {
+                if (genreResponse != null) {
                     val data = genreResponse.data.isEmpty()
                     data
-                }else{
+                } else {
                     true
                 }
             }
@@ -103,24 +105,6 @@ class ComicRepository @Inject constructor(
             onFetchFailed(it)
         }
     )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

@@ -14,5 +14,6 @@ data class GenreResponse(
     val data: List<ComicDetails>,
     val page: Int,
     val totalPages: Int,
-    val type: String
-)
+    val Comictype: String
+){
+}

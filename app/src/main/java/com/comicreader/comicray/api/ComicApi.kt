@@ -1,6 +1,5 @@
 package com.comicreader.comicray.api
 
-import com.comicreader.comicray.data.models.Genre
 import com.comicreader.comicray.data.models.completedComic.CompletedComic
 import com.comicreader.comicray.data.models.custom.ComicDetails
 import com.comicreader.comicray.data.models.custom.GenreResponse
@@ -28,6 +27,18 @@ interface ComicApi {
         @Query("tag") tag : String,
         @Query("page") page : Int
     ) : GenreResponse
+
+    @Headers("Accept: application/json")
+    @GET("manga/Genre")
+    suspend fun getGenreManga(
+        @Query("type") tag : String = "Latest",
+        @Query("state") state : String =  "All",
+        @Query("category") category : String,
+        @Query("page") page : Int = 1
+    ) : GenreResponse
+
+
+
 
     @GET("v1/comic/Genre/list")
     suspend fun getGenreList() : List<Genre.Comic>
