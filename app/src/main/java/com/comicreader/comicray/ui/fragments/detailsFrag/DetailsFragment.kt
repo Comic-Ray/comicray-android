@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.comicreader.comicray.R
 import com.comicreader.comicray.data.models.BookType
@@ -48,6 +49,7 @@ class DetailsFragment : ValueFragment(R.layout.fragment_details) {
         val args = getKeyArgs<DetailsArgs>()
 
         binding.swipeRefreshLayout.isEnabled = false
+        binding.fab.hide()
 
         binding.toolbar.setNavigationOnClickListener { goBack() }
 
@@ -120,6 +122,24 @@ class DetailsFragment : ValueFragment(R.layout.fragment_details) {
                 }
             }
         }
+
+
+        binding.fab.setOnClickListener {
+            binding.recView.smoothScrollBy(0, -binding.recView.computeVerticalScrollExtent())
+        }
+
+        binding.recView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val height = binding.recView.computeVerticalScrollOffset()
+                    if (height > resources.displayMetrics.widthPixels) {
+                        binding.fab.show()
+                    } else {
+                        binding.fab.hide()
+                    }
+                }
+            }
+        })
     }
 
     private fun setMangaDetails(data: MangaDetailsResponse) {
