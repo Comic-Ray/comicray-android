@@ -38,7 +38,6 @@ class ChipController : EpoxyController() {
                     chip {
                         id("Genre" + comicGenre.tag)
                         title(comicGenre.name)
-                        marginHorizontalDp(3f)
                     }
                 }
             }
@@ -50,7 +49,6 @@ class ChipController : EpoxyController() {
                     chip {
                         id("MangaGenre" + mangaGenre.category)
                         title(mangaGenre.name)
-                        marginHorizontalDp(3f)
                     }
                 }
             }
