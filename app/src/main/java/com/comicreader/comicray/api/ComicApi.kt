@@ -1,5 +1,6 @@
 package com.comicreader.comicray.api
 
+import com.comicreader.comicray.data.models.Genre
 import com.comicreader.comicray.data.models.completedComic.CompletedComic
 import com.comicreader.comicray.data.models.custom.ComicDetails
 import com.comicreader.comicray.data.models.custom.GenreResponse
@@ -13,16 +14,16 @@ import retrofit2.http.Query
 
 interface ComicApi {
 
-    @GET("v1/comic/Home/featured")
+    @GET("comic/Home/featured")
     suspend fun getFeaturedComics(): List<FeaturedComic>
 
-    @GET("v1/comic/Home/ongoing")
+    @GET("comic/Home/ongoing")
     fun getOngoingComics(): Response<List<OngoingComic>>
 
-    @GET("v1/comic/Home/completed")
+    @GET("comic/Home/completed")
     fun getCompletedComics(): Response<List<CompletedComic>>
 
-    @GET("v1/comic/Genre")
+    @GET("comic/Genre")
     suspend fun getGenreComics(
         @Query("tag") tag : String,
         @Query("page") page : Int

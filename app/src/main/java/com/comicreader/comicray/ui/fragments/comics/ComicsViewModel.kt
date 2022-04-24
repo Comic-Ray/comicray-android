@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.comicreader.comicray.data.models.DataItem
 import com.comicreader.comicray.data.models.custom.ComicDetails
 import com.comicreader.comicray.data.models.custom.CustomData
+import com.comicreader.comicray.data.models.custom.toDataItem
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
 import com.comicreader.comicray.data.repositories.ComicRepository
 import com.comicreader.comicray.utils.ComicGenres
@@ -147,7 +148,7 @@ class ComicsViewModel @Inject constructor(
                 }
             }
         )
-    }.filter { it is Resource.Success }.mapNotNull { convertToCommonData(it.data) }
+    }.filter { it is Resource.Success }.mapNotNull { it.data }
 
     fun getActionComics(): Flow<List<DataItem>> = refreshTrigger.flatMapLatest { trigger ->
         comicRepository.getGenreComics(
@@ -196,15 +197,15 @@ class ComicsViewModel @Inject constructor(
         return data.map { it.toDataItem() }
     }
 
-    private fun convertToCommonData(featured: List<FeaturedComic>?): List<DataItem> {
-        return featured?.map {
-            ComicDetails(
-                title = it.title,
-                url = it.url,
-                imageUrl = it.imageUrl
-            ).toDataItem()
-        } ?: emptyList()
-    }
+//    private fun convertToCommonData(featured: List<FeaturedComic>?): List<DataItem> {
+//        return featured?.map {
+//            ComicDetails(
+//                title = it.title,
+//                url = it.url,
+//                imageUrl = it.imageUrl
+//            ).toDataItem()
+//        } ?: emptyList()
+//    }
 
     override fun onCleared() {
         super.onCleared()
