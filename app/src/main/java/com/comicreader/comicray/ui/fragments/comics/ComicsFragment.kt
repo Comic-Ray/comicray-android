@@ -16,7 +16,6 @@ import com.comicreader.comicray.utils.Event
 import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.ValueFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -27,7 +26,7 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
 
     private val viewModel by viewModels<ComicsViewModel>()
 
-    private lateinit var adapter: ComicAdapter
+//    private lateinit var adapter: ComicAdapter
 
     private lateinit var controller: MainScreenController
 
@@ -45,11 +44,11 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getActionComics().collect { controller.setActionComics(it.data) }
+            viewModel.getActionComics().collect { controller.setActionComics(it) }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getPopularComics().collect { controller.setPopularComics(it.data) }
+            viewModel.getPopularComics().collect { controller.setPopularComics(it) }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -81,7 +80,7 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.onManuelRefresh()
+            viewModel.onManualRefresh()
             binding.swipeRefreshLayout.isRefreshing = false
         }
     }

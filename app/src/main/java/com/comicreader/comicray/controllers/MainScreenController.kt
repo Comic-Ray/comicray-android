@@ -1,6 +1,7 @@
 package com.comicreader.comicray.controllers
 
 import com.airbnb.epoxy.*
+import com.comicreader.comicray.data.models.DataItem
 import com.comicreader.comicray.data.models.custom.ComicDetails
 import com.comicreader.comicray.data.models.custom.CustomData
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
@@ -22,13 +23,13 @@ class MainScreenController : AsyncEpoxyController() {
     private var dramaManga: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
 
 
-    fun setPopularComics(data: List<ComicDetails>) {
+    fun setPopularComics(data: List<DataItem>) {
         popularComics.clear()
         popularComics.addAll(data)
         requestModelBuild()
     }
 
-    fun setActionComics(data: List<ComicDetails>) {
+    fun setActionComics(data: List<DataItem>) {
         actionComics.clear()
         actionComics.addAll(data)
         requestModelBuild()
@@ -49,12 +50,7 @@ class MainScreenController : AsyncEpoxyController() {
     //old impl
     fun submitList(data: Map<ComicGenres, CustomData>) {
         featuredComics.clear()
-        actionComics.clear()
-        popularComics.clear()
-
-        data[ComicGenres.Featured]?.let { featuredComics.addAll(it.comics) }
-        data[ComicGenres.Action]?.let { actionComics.addAll(it.comics) }
-        data[ComicGenres.Popular]?.let { popularComics.addAll(it.comics) }
+        featuredComics.addAll(data)
         requestModelBuild()
     }
 
@@ -86,6 +82,17 @@ class MainScreenController : AsyncEpoxyController() {
         dramaManga.addAll(data)
         requestModelBuild()
     }
+
+//    fun submitList(data: Map<ComicGenres, CustomData>){
+//        featuredComics.clear()
+//        actionComics.clear()
+//        popularComics.clear()
+//
+//        data[ComicGenres.Featured]?.let { featuredComics.addAll(it.comics) }
+//        data[ComicGenres.Action]?.let { actionComics.addAll(it.comics) }
+//        data[ComicGenres.Popular]?.let { popularComics.addAll(it.comics) }
+//        requestModelBuild()
+//    }
 
     override fun buildModels() {
         Carousel.setDefaultGlobalSnapHelperFactory(null)

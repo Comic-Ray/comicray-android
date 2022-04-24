@@ -55,12 +55,10 @@ class CustomAdapter(
     }
 
     private fun ItemComicBinding.setImage(imageUrl : String){
-        shimmerLayout.startShimmer()
         imgView.load(
             uri = imageUrl,
             onSuccess = { bmp ->
                 imgView.setImageBitmap(bmp)
-                shimmerLayout.hideShimmer()
             }
         )
     }

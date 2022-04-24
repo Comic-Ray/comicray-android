@@ -2,7 +2,7 @@ package com.comicreader.comicray.data.models.custom
 
 import android.os.Parcelable
 import com.comicreader.comicray.data.models.DataItem
-import com.comicreader.comicray.data.models.GenreType
+import com.comicreader.comicray.data.models.BookType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -38,6 +38,7 @@ data class MangaGenreResponse(
 fun MangaDetail.toDataItem(): DataItem = DataItem(
     title = title,
     imageUrl = imageUrl,
-    type = GenreType.Manga,
+    url = url,
+    type = BookType.Manga,
     additionalData = this
 )
