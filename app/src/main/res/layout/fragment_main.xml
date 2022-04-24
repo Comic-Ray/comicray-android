@@ -23,4 +23,24 @@
         android:layout_height="wrap_content"
         app:menu="@menu/bottom_nav_menu" />
 
+    <!-- TODO(KP): Remove once detail screen is implemented -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/testComicRead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comic read" />
+
+        <Button
+            android:id="@+id/testMangaRead"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Manga read"/>
+    </LinearLayout>
+
 </LinearLayout>

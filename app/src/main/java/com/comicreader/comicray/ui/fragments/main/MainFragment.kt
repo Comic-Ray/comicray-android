@@ -5,7 +5,10 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.comicreader.comicray.R
 import com.comicreader.comicray.data.models.BookType
+import com.comicreader.comicray.TestComicData
+import com.comicreader.comicray.TestMangaData
 import com.comicreader.comicray.databinding.FragmentMainBinding
+import com.comicreader.comicray.extensions.viewBinding
 import com.comicreader.comicray.ui.fragments.comics.ComicsFragment
 import com.comicreader.comicray.ui.fragments.detailsFrag.DetailsFragment.Companion.gotoDetails
 import com.comicreader.comicray.ui.fragments.manga.MangaFragment
@@ -14,31 +17,30 @@ import com.kpstv.navigation.BottomNavigationController
 import com.kpstv.navigation.FragmentNavigator
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.navigation.install
+import com.comicreader.comicray.ui.fragments.read.ReadFragment
+import com.kpstv.navigation.*
 import kotlin.reflect.KClass
 
 class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Transmitter {
 
-    private lateinit var navigator : FragmentNavigator
-    private lateinit var bottomNavController : BottomNavigationController
+    private lateinit var navigator: FragmentNavigator
+    private lateinit var bottomNavController: BottomNavigationController
 
-    private var _binding : FragmentMainBinding?=null
-    private val binding get() = _binding!!
+    private val binding by viewBinding(FragmentMainBinding::bind)
 
     override fun getNavigator(): FragmentNavigator = navigator
 
     override val forceBackPress: Boolean
-        get() = _binding?.bottomNavView?.selectedItemId != R.id.Comics
+        get() = binding.bottomNavView.selectedItemId != R.id.Comics
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentMainBinding.bind(view)
-
-        navigator = FragmentNavigator.with(this,savedInstanceState)
+        navigator = FragmentNavigator.with(this, savedInstanceState)
             .initialize(binding.fragmentContainer)
 
-        bottomNavController = navigator.install(object : FragmentNavigator.BottomNavigation(){
+        bottomNavController = navigator.install(object : FragmentNavigator.BottomNavigation() {
             override val bottomNavigationViewId: Int = R.id.bottom_nav_view
             override val bottomNavigationFragments: Map<Int, KClass<out Fragment>> =
                 mapOf(
@@ -50,8 +52,41 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
         })
 
         binding.btnComic.setOnClickListener {
-            parentNavigator.gotoDetails(name = "Action", url = "https://mangakakalot.com/manga/tu926037", type = BookType.Manga)
+            parentNavigator.gotoDetails(
+                name = "Action",
+                url = "https://mangakakalot.com/manga/tu926037",
+                type = BookType.Manga
+            )
 
+            // TODO(KP): Remove this code once detail screens are implemented.
+
+            binding.testComicRead.setOnClickListener {
+                val options = FragmentNavigator.NavOptions(
+                    args = ReadFragment.Args(
+                        title = TestComicData.title,
+                        episodeTitle = TestComicData.issueTitle,
+                        url = TestComicData.url,
+                        imageList = TestComicData.imageList
+                    ),
+                    animation = AnimationDefinition.Fade,
+                    remember = true,
+                )
+                parentNavigator.navigateTo(ReadFragment::class, options)
+            }
+
+            binding.testMangaRead.setOnClickListener {
+                val options = FragmentNavigator.NavOptions(
+                    args = ReadFragment.Args(
+                        title = TestMangaData.title,
+                        episodeTitle = TestMangaData.issueTitle,
+                        url = TestMangaData.url,
+                        imageList = TestMangaData.imageList
+                    ),
+                    animation = AnimationDefinition.Fade,
+                    remember = true
+                )
+                parentNavigator.navigateTo(ReadFragment::class, options)
+            }
         }
     }
 
@@ -61,10 +96,5 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
             return true
         }
         return super.onBackPressed()
-    }
-
-    override fun onDestroy() {
-        _binding = null
-        super.onDestroy()
     }
 }

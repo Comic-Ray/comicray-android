@@ -7,13 +7,16 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.comicreader.comicray.GlideApp
+import com.comicreader.comicray.GlideRequests
 
 fun ImageView.load(
     uri: String?,
+    requestBuilder: GlideRequests? = null,
     onSuccess: ((Bitmap?) -> Unit)? = null,
     onError: ((GlideException?) -> Unit)? = null
 ) {
-    val glideRequests = Glide.with(this)
+    val glideRequests = requestBuilder ?: GlideApp.with(this)
     glideRequests.asBitmap().load(uri)
         .listener(object :
             RequestListener<Bitmap> {
