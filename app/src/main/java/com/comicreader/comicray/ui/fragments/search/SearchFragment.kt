@@ -41,8 +41,8 @@ class SearchFragment : ValueFragment(R.layout.fragment_search) {
                 val options = MoreFragment.getSearchNavOptions(viewModel.getCurrentQuery(), type = type)
                 navViewModel.navigateTo(MainRoutes.MORE, options)
             },
-            goToDetail = { data ->
-                val options = DetailsFragment.getNavOptions(data.title, data.url, data.type)
+            goToDetail = { title, url, type ->
+                val options = DetailsFragment.getNavOptions(title, url, type)
                 navViewModel.navigateTo(MainRoutes.DETAIL, options)
             }
         )
