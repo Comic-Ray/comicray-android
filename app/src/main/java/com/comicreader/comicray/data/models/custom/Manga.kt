@@ -53,6 +53,13 @@ data class MangaGenreResponse(
     )
 }
 
+data class MangaReadResponse(
+    val images: List<String>,
+    val issueName: String,
+    val title: String,
+    val url: String
+)
+
 fun MangaDetail.toDataItem(): DataItem = DataItem(
     title = title,
     imageUrl = imageUrl,

@@ -1,4 +1,4 @@
-package com.comicreader.comicray.ui.fragments.read.epoxy
+package com.comicreader.comicray.epoxyModels
 
 import android.view.View
 import com.airbnb.epoxy.EpoxyAttribute
@@ -10,7 +10,6 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.comicreader.comicray.GlideApp
 import com.comicreader.comicray.R
 import com.comicreader.comicray.databinding.ItemFragmentReadBinding
-import com.comicreader.comicray.utils.load
 
 @EpoxyModelClass(layout = R.layout.item_fragment_read)
 abstract class ReadImageModel : EpoxyModelWithHolder<ReadImageModel.ReadHolder>() {

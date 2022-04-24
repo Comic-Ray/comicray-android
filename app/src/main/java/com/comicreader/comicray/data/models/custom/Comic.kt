@@ -30,10 +30,17 @@ data class ComicGenreResponse(
     val data: List<ComicDetail>
 )
 
+data class ComicReadResponse(
+    val images: List<String>,
+    val issueTitle: String,
+    val title: String,
+    val url: String
+)
+
 fun ComicDetail.toDataItem(): DataItem = DataItem(
     title = title,
     imageUrl = imageUrl,
     url = url,
-    type = BookType.Manga,
+    type = BookType.Comic,
     additionalData = this
 )

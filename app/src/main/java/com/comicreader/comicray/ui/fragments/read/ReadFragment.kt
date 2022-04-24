@@ -5,15 +5,17 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.GestureDetectorCompat
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.comicreader.comicray.R
+import com.comicreader.comicray.data.models.BookType
 import com.comicreader.comicray.databinding.FragmentReadBinding
+import com.comicreader.comicray.extensions.hide
 import com.comicreader.comicray.extensions.isExpanded
+import com.comicreader.comicray.extensions.show
 import com.comicreader.comicray.extensions.viewBinding
-import com.comicreader.comicray.ui.fragments.read.epoxy.ReadController
-import com.kpstv.navigation.BaseArgs
-import com.kpstv.navigation.ValueFragment
-import com.kpstv.navigation.getKeyArgs
+import com.comicreader.comicray.ui.fragments.read.controller.ReadController
+import com.kpstv.navigation.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
 
@@ -21,19 +23,37 @@ import kotlinx.parcelize.Parcelize
 class ReadFragment : ValueFragment(R.layout.fragment_read) {
     private val binding by viewBinding(FragmentReadBinding::bind)
 
-    private val args: Args by lazy { getKeyArgs() }
     private val controller: ReadController by lazy { ReadController() }
+
+    private val viewModel by viewModels<ReadViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbar.title = args.title
-        binding.toolbar.subtitle = args.episodeTitle
+        val args = getKeyArgs<Args>()
 
         setToolbarMenu()
         setRecyclerView()
         setProgressIndicator()
         setToolbarScrollBehavior()
+
+        viewModel.getReadItem(args.url, args.type).observe(viewLifecycleOwner) { state ->
+            binding.swipeRefreshLayout.isRefreshing = state is ReadViewModel.ReadUiState.Loading
+            when(state) {
+                ReadViewModel.ReadUiState.Loading -> {
+                    binding.epoxyRecyclerView.hide()
+                }
+                is ReadViewModel.ReadUiState.Success -> {
+                    binding.epoxyRecyclerView.show()
+                    binding.toolbar.title = state.data.title
+                    binding.toolbar.subtitle = state.data.issueName
+                    controller.submitImageList(state.data.imageUrls)
+                }
+                is ReadViewModel.ReadUiState.Error -> {
+                    state.error.printStackTrace()
+                }
+            }
+        }
     }
 
     private fun setToolbarScrollBehavior() {
@@ -68,7 +88,6 @@ class ReadFragment : ValueFragment(R.layout.fragment_read) {
     }
 
     private fun setRecyclerView() {
-        controller.submitImageList(args.imageList)
         binding.epoxyRecyclerView.setControllerAndBuildModels(controller)
     }
 
@@ -87,5 +106,15 @@ class ReadFragment : ValueFragment(R.layout.fragment_read) {
     }
 
     @Parcelize
-    data class Args(val title: String, val episodeTitle: String, val url: String, val imageList: List<String>) : BaseArgs()
+    data class Args(val url: String, val type: BookType) : BaseArgs()
+
+    companion object {
+        fun getNavOptions(url: String, type: BookType): FragmentNavigator.NavOptions {
+            return FragmentNavigator.NavOptions(
+                args = Args(url = url, type = type),
+                animation = AnimationDefinition.Fade,
+                remember = true
+            )
+        }
+    }
 }

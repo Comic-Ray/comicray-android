@@ -7,6 +7,8 @@ import com.comicreader.comicray.ui.fragments.more.MoreFragment
 import com.comicreader.comicray.ui.fragments.main.MainFragment
 import com.kpstv.navigation.*
 import com.comicreader.comicray.extensions.AbstractNavigationOptions
+import com.comicreader.comicray.ui.fragments.detailsFrag.DetailsFragment
+import com.comicreader.comicray.ui.fragments.read.ReadFragment
 import kotlin.reflect.KClass
 
 typealias FragClazz = KClass<out Fragment>
@@ -32,4 +34,6 @@ class MainNavViewModel : ViewModel() {
 enum class MainRoutes(val clazz: FragClazz) {
     MAIN(MainFragment::class),
     MORE(MoreFragment::class),
+    DETAIL(DetailsFragment::class),
+    READ(ReadFragment::class),
 }

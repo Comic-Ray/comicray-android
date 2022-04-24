@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @AndroidEntryPoint
-class DetailsFragment : ValueFragment() {
+class DetailsFragment : ValueFragment(R.layout.fragment_details) {
 
     private val binding by viewBinding(FragmentDetailsBinding::bind)
 
@@ -35,13 +35,6 @@ class DetailsFragment : ValueFragment() {
     private lateinit var detailsController: DetailsController
 
     private lateinit var chipController: ChipController
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_details, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -116,12 +109,6 @@ class DetailsFragment : ValueFragment() {
                 }
             }
         }
-
-
-//removing refresh listener
-//        binding.swipeRefreshLayout.setOnRefreshListener {
-//            viewModel.onFetch(args.url,args.type)
-//        }
     }
 
     private fun setMangaDetails(data: MangaDetailsResponse) {
@@ -176,15 +163,13 @@ class DetailsFragment : ValueFragment() {
     data class DetailsArgs(val name: String, val url: String, val type: BookType) : BaseArgs()
 
     companion object {
-        fun FragmentNavigator.gotoDetails(name: String, url: String, type: BookType) {
-            val options = FragmentNavigator.NavOptions(
+        fun getNavOptions(name: String, url: String, type: BookType): FragmentNavigator.NavOptions {
+            return FragmentNavigator.NavOptions(
                 args = DetailsArgs(name = name, url = url, type = type),
                 transaction = FragmentNavigator.TransactionType.REPLACE,
                 animation = AnimationDefinition.SlideInRight,
                 remember = true
             )
-            navigateTo(DetailsFragment::class, options)
         }
     }
-
 }

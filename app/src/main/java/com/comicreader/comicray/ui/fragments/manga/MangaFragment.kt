@@ -13,6 +13,7 @@ import com.comicreader.comicray.databinding.FragmentMangaBinding
 import com.comicreader.comicray.extensions.viewBinding
 import com.comicreader.comicray.ui.activities.MainNavViewModel
 import com.comicreader.comicray.ui.activities.MainRoutes
+import com.comicreader.comicray.ui.fragments.detailsFrag.DetailsFragment
 import com.comicreader.comicray.ui.fragments.more.MoreFragment
 import com.comicreader.comicray.utils.Constants.Manga
 import com.kpstv.navigation.ValueFragment
@@ -34,6 +35,10 @@ class MangaFragment : ValueFragment(R.layout.fragment_manga) {
             goToGenre = { genre ->
                 val options = MoreFragment.getGenreNavOptions(genre)
                 navViewModel.navigateTo(MainRoutes.MORE, options)
+            },
+            goToDetail = { data ->
+                val options = DetailsFragment.getNavOptions(data.title, data.url, data.type)
+                navViewModel.navigateTo(MainRoutes.DETAIL, options)
             }
         )
         controller.submitType(Manga)

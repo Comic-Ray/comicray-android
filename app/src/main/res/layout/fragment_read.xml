@@ -13,10 +13,10 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            app:layout_scrollFlags="scroll|snap"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?colorPrimary"
+            app:layout_scrollFlags="scroll|snap"
             app:menu="@menu/read_menu"
             app:navigationIcon="@drawable/ic_arrow_back"
             tools:subtitle="Episode #21"
@@ -29,10 +29,17 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.airbnb.epoxy.EpoxyRecyclerView
-        android:id="@+id/epoxy_recycler_view"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/epoxy_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

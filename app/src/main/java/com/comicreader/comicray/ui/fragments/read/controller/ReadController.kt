@@ -1,6 +1,7 @@
-package com.comicreader.comicray.ui.fragments.read.epoxy
+package com.comicreader.comicray.ui.fragments.read.controller
 
 import com.airbnb.epoxy.EpoxyController
+import com.comicreader.comicray.epoxyModels.readImage
 import java.util.concurrent.CopyOnWriteArrayList
 
 class ReadController : EpoxyController() {

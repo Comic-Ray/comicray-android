@@ -2,6 +2,7 @@ package com.comicreader.comicray.api
 
 import com.comicreader.comicray.data.models.Genre
 import com.comicreader.comicray.data.models.custom.MangaGenreResponse
+import com.comicreader.comicray.data.models.custom.MangaReadResponse
 import com.comicreader.comicray.data.models.custom.MangaSearchResponse
 import com.comicreader.comicray.data.models.mangaDetails.MangaDetailsResponse
 import retrofit2.http.GET
@@ -27,4 +28,7 @@ interface MangaApi {
     suspend fun getMangaDetails(
         @Query("url") url: String
     ): MangaDetailsResponse
+
+    @GET("v1/manga/Read")
+    suspend fun getReadData(@Query("url") url: String) : MangaReadResponse
 }
