@@ -36,7 +36,7 @@ class SearchViewModel @Inject constructor(
         .debounce(1000L)
         .flatMapLatest { query ->
             val innerFlow = MutableStateFlow<List<SearchCommon>?>(emptyList())
-            if (query.isNotEmpty()) {
+            if (query.trim().isNotEmpty()) {
                 innerFlow.emit(emptyList())
                 val scope = CoroutineScope(coroutineContext)
                 scope.launch {
