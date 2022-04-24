@@ -3,7 +3,8 @@ package com.comicreader.comicray.ui.fragments.manga
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.comicreader.comicray.data.models.DataItem
-import com.comicreader.comicray.data.models.custom.ComicDetails
+import com.comicreader.comicray.data.models.custom.ComicDetail
+import com.comicreader.comicray.data.models.custom.MangaGenre
 import com.comicreader.comicray.data.models.custom.toDataItem
 import com.comicreader.comicray.data.repositories.MangaRepository
 import com.comicreader.comicray.utils.Event
@@ -28,12 +29,11 @@ class MangaViewModel @Inject constructor(
 
 
     //we get all latest comics by passing categoryNo as "all" so I am naming it as Trending Comics
-    fun getTrendingComics() = refreshTriggerChannel.flatMapLatest {
-        repository.getGenreComics(
+    fun getTrendingComics(): Flow<List<DataItem>> = refreshTriggerChannel.flatMapLatest {
+        repository.getGenre(
             forceRefresh = it == Refresh.Force,
             categoryNo = "all",
             tag = "trending",
-            type = "Manga",
             fetchSuccess = {},
             onFetchFailed = { throwable ->
                 viewModelScope.launch {
@@ -41,14 +41,13 @@ class MangaViewModel @Inject constructor(
                 }
             }
         )
-    }.filter { it is Resource.Success }.mapNotNull { it.data}
+    }.filter { it is Resource.Success }.mapNotNull { convertToCommonData(it.data?.data ?: emptyList()) }
 
-    fun getDramaComics() = refreshTriggerChannel.flatMapLatest {
-        repository.getGenreComics(
+    fun getDramaComics(): Flow<List<DataItem>> = refreshTriggerChannel.flatMapLatest {
+        repository.getGenre(
             forceRefresh = it == Refresh.Force,
             categoryNo = "10",
             tag = "Drama",
-            type = "Manga",
             fetchSuccess = {},
             onFetchFailed = { throwable ->
                 viewModelScope.launch {
@@ -56,14 +55,13 @@ class MangaViewModel @Inject constructor(
                 }
             }
         )
-    }.filter { it is Resource.Success }.mapNotNull { it.data }
+    }.filter { it is Resource.Success }.mapNotNull { convertToCommonData(it.data?.data ?: emptyList()) }
 
-    fun getAdventureComics() = refreshTriggerChannel.flatMapLatest {
-        repository.getGenreComics(
+    fun getAdventureComics(): Flow<List<DataItem>> = refreshTriggerChannel.flatMapLatest {
+        repository.getGenre(
             forceRefresh = it == Refresh.Force,
             categoryNo = "4",
             tag = "Adventure",
-            type = "Manga",
             fetchSuccess = {},
             onFetchFailed = { throwable ->
                 viewModelScope.launch {
@@ -71,14 +69,13 @@ class MangaViewModel @Inject constructor(
                 }
             }
         )
-    }.filter { it is Resource.Success }.mapNotNull { it.data }
+    }.filter { it is Resource.Success }.mapNotNull { convertToCommonData(it.data?.data ?: emptyList()) }
 
-    fun getComedyComics() = refreshTriggerChannel.flatMapLatest {
-        repository.getGenreComics(
+    fun getComedyComics(): Flow<List<DataItem>> = refreshTriggerChannel.flatMapLatest {
+        repository.getGenre(
             forceRefresh = it == Refresh.Force,
             categoryNo = "6",
             tag = "Comedy",
-            type = "Manga",
             fetchSuccess = {},
             onFetchFailed = { throwable ->
                 viewModelScope.launch {
@@ -86,7 +83,7 @@ class MangaViewModel @Inject constructor(
                 }
             }
         )
-    }.filter { it is Resource.Success }.mapNotNull { it.data }
+    }.filter { it is Resource.Success }.mapNotNull { convertToCommonData(it.data?.data ?: emptyList()) }
 
 
     fun onManualRefresh() {
@@ -95,7 +92,7 @@ class MangaViewModel @Inject constructor(
         }
     }
 
-    private fun convertToCommonData(data: List<ComicDetails>) : List<DataItem> {
+    private fun convertToCommonData(data: List<MangaGenre>) : List<DataItem> {
         return data.map { it.toDataItem() }
     }
 

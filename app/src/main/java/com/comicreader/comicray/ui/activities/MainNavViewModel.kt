@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.comicreader.comicray.ui.fragments.more.MoreFragment
 import com.comicreader.comicray.ui.fragments.main.MainFragment
 import com.kpstv.navigation.*
-import extensions.AbstractNavigationOptions
+import com.comicreader.comicray.extensions.AbstractNavigationOptions
 import kotlin.reflect.KClass
 
 typealias FragClazz = KClass<out Fragment>

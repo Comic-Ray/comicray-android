@@ -6,7 +6,7 @@ import com.comicreader.comicray.data.models.DataItem
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ComicDetails(
+data class ComicDetail(
     var title: String,
     val url: String,
     val imageUrl: String,
@@ -24,7 +24,13 @@ data class ComicDetails(
     ) : Parcelable
 }
 
-fun ComicDetails.toDataItem(): DataItem = DataItem(
+data class ComicGenreResponse(
+    val page: Int,
+    val totalPages: Int,
+    val data: List<ComicDetail>
+)
+
+fun ComicDetail.toDataItem(): DataItem = DataItem(
     title = title,
     imageUrl = imageUrl,
     url = url,

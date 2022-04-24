@@ -61,4 +61,6 @@ class SearchViewModel @Inject constructor(
             searchQueryStateFlow.emit(query)
         }
     }
+
+    fun getCurrentQuery() : String = searchQueryStateFlow.value
 }

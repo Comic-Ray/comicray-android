@@ -57,36 +57,36 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
                 url = "https://mangakakalot.com/manga/tu926037",
                 type = BookType.Manga
             )
+        }
 
-            // TODO(KP): Remove this code once detail screens are implemented.
+        // TODO(KP): Remove this code once detail screens are implemented.
 
-            binding.testComicRead.setOnClickListener {
-                val options = FragmentNavigator.NavOptions(
-                    args = ReadFragment.Args(
-                        title = TestComicData.title,
-                        episodeTitle = TestComicData.issueTitle,
-                        url = TestComicData.url,
-                        imageList = TestComicData.imageList
-                    ),
-                    animation = AnimationDefinition.Fade,
-                    remember = true,
-                )
-                parentNavigator.navigateTo(ReadFragment::class, options)
-            }
+        binding.testComicRead.setOnClickListener {
+            val options = FragmentNavigator.NavOptions(
+                args = ReadFragment.Args(
+                    title = TestComicData.title,
+                    episodeTitle = TestComicData.issueTitle,
+                    url = TestComicData.url,
+                    imageList = TestComicData.imageList
+                ),
+                animation = AnimationDefinition.Fade,
+                remember = true,
+            )
+            parentNavigator.navigateTo(ReadFragment::class, options)
+        }
 
-            binding.testMangaRead.setOnClickListener {
-                val options = FragmentNavigator.NavOptions(
-                    args = ReadFragment.Args(
-                        title = TestMangaData.title,
-                        episodeTitle = TestMangaData.issueTitle,
-                        url = TestMangaData.url,
-                        imageList = TestMangaData.imageList
-                    ),
-                    animation = AnimationDefinition.Fade,
-                    remember = true
-                )
-                parentNavigator.navigateTo(ReadFragment::class, options)
-            }
+        binding.testMangaRead.setOnClickListener {
+            val options = FragmentNavigator.NavOptions(
+                args = ReadFragment.Args(
+                    title = TestMangaData.title,
+                    episodeTitle = TestMangaData.issueTitle,
+                    url = TestMangaData.url,
+                    imageList = TestMangaData.imageList
+                ),
+                animation = AnimationDefinition.Fade,
+                remember = true
+            )
+            parentNavigator.navigateTo(ReadFragment::class, options)
         }
     }
 

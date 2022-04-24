@@ -9,7 +9,7 @@ import com.airbnb.epoxy.EpoxyModelClass
 import com.airbnb.epoxy.EpoxyModelWithHolder
 import com.comicreader.comicray.R
 import com.comicreader.comicray.databinding.ItemSpacerBinding
-import extensions.toPx
+import com.comicreader.comicray.extensions.toPx
 
 @EpoxyModelClass(layout = R.layout.item_spacer)
 abstract class Spacer : EpoxyModelWithHolder<Spacer.ViewHolder>() {

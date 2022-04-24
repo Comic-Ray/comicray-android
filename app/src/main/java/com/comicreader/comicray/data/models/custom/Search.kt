@@ -3,7 +3,7 @@ package com.comicreader.comicray.data.models.custom
 import com.comicreader.comicray.data.models.BookType
 import java.io.Serializable
 
-data class ComicSearchResponse(val page: Int, val totalPages: Int, val data: List<ComicDetails>) : Serializable
+data class ComicSearchResponse(val page: Int, val totalPages: Int, val data: List<ComicDetail>) : Serializable
 data class MangaSearchResponse(val page: Int, val totalPages: Int, val data: List<MangaDetail>) : Serializable
 
 data class SearchCommon(

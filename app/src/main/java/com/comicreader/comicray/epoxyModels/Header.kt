@@ -11,7 +11,7 @@ import com.airbnb.epoxy.EpoxyModelClass
 import com.airbnb.epoxy.EpoxyModelWithHolder
 import com.comicreader.comicray.R
 import com.comicreader.comicray.databinding.ItemHeaderBinding
-import extensions.toPx
+import com.comicreader.comicray.extensions.toPx
 
 @EpoxyModelClass(layout = R.layout.item_header)
 abstract class Header : EpoxyModelWithHolder<Header.ViewHolder>() {
@@ -28,11 +28,9 @@ abstract class Header : EpoxyModelWithHolder<Header.ViewHolder>() {
     override fun bind(holder: ViewHolder) {
         holder.binding.apply {
             root.text = title
-            if (marginHorizontalDp != 0f) {
-                val marginPx = root.context.toPx(marginHorizontalDp).toInt()
-                root.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                    updateMargins(right = marginPx, left = marginPx)
-                }
+            val marginPx = root.context.toPx(marginHorizontalDp).toInt()
+            root.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                updateMargins(right = marginPx, left = marginPx)
             }
             if (textSizeSp != 0f) {
                 root.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeSp)

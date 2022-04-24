@@ -1,61 +1,47 @@
 package com.comicreader.comicray.data.repositories
 
-import androidx.room.withTransaction
-import com.comicreader.comicray.api.ComicApi
 import com.comicreader.comicray.api.MangaApi
+import com.comicreader.comicray.data.models.BookType
 import com.comicreader.comicray.data.models.Genre
-import com.comicreader.comicray.data.models.custom.GenreResponse
+import com.comicreader.comicray.data.models.custom.GenreDetail
+import com.comicreader.comicray.data.models.custom.MangaGenreResponse
+import com.comicreader.comicray.data.models.custom.toGenreDetail
 import com.comicreader.comicray.data.models.mangaDetails.MangaDetailsResponse
 import com.comicreader.comicray.db.ComicDatabase
 import com.comicreader.comicray.utils.Resource
 import com.comicreader.comicray.utils.networkBoundResource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import retrofit2.HttpException
 import java.io.IOException
-import java.lang.Exception
 import javax.inject.Inject
 
 class MangaRepository @Inject constructor(
-    private val comicApi: ComicApi,
     private val mangaApi: MangaApi,
     private val comicDb: ComicDatabase
 ) {
 
     //in manga api tag = categoryname, categoryNo = CategoryNumber
-    fun getGenreComics(
+    fun getGenre(
         forceRefresh : Boolean,
         categoryNo: String,
         tag : String,
-        type: String,
         fetchSuccess: () -> Unit,
         onFetchFailed : (Throwable) -> Unit
-    ) : Flow<Resource<GenreResponse>> = networkBoundResource(
+    ) : Flow<Resource<MangaGenreResponse>> = networkBoundResource(
         query = {
-            val query = comicDb.homeComicDao().getGenreComicsResponse(tag, type)
+            val query = comicDb.homeComicDao().getGenreComicsResponse(tag, BookType.Manga).map { it.getMangaGenreResponse() }
             query
         },
         fetch = {
-            val data = comicApi.getGenreManga(category = categoryNo)
+            val data = mangaApi.getMangaGenre(category = categoryNo, page = 1)
             data
         },
-        saveFetchResult = {
-            val c = GenreResponse(tag = tag,data = it.data,page = it.page,totalPages = it.totalPages, Comictype = type)
-            comicDb.withTransaction {
-                comicDb.homeComicDao().deleteGenreComicsResponse(tag, type)
-                comicDb.homeComicDao().insertGenreComicsResponse(c)
-            }
-        },
-        shouldFetch = {genreResponse ->
+        saveFetchResult = { comicDb.homeComicDao().insertGenreDetailResponse(it.toGenreDetail(tag)) },
+        shouldFetch = { genreResponse ->
             if (forceRefresh){
                 true
             }else {
-                if (genreResponse!=null) {
-                    val data = genreResponse.data.isEmpty()
-                    data
-                }else{
-                    true
-                }
+                genreResponse.data.isEmpty()
             }
         },
         onFetchSuccess = fetchSuccess,

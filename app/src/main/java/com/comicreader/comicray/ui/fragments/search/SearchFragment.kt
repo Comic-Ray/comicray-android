@@ -17,8 +17,8 @@ import com.comicreader.comicray.ui.fragments.search.controller.SearchController
 import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.ValueFragment
 import dagger.hilt.android.AndroidEntryPoint
-import extensions.hide
-import extensions.show
+import com.comicreader.comicray.extensions.hide
+import com.comicreader.comicray.extensions.show
 
 @AndroidEntryPoint
 class SearchFragment : ValueFragment(R.layout.fragment_search) {
@@ -34,6 +34,10 @@ class SearchFragment : ValueFragment(R.layout.fragment_search) {
             context = requireContext(),
             goToGenre = { genre ->
                 val options = MoreFragment.getGenreNavOptions(genre)
+                navViewModel.navigateTo(MainRoutes.MORE, options)
+            },
+            goToMoreSearch = { type ->
+                val options = MoreFragment.getSearchNavOptions(viewModel.getCurrentQuery(), type = type)
                 navViewModel.navigateTo(MainRoutes.MORE, options)
             }
         )

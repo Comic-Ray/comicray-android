@@ -12,8 +12,8 @@ import com.comicreader.comicray.extensions.viewBinding
 import com.comicreader.comicray.ui.fragments.more.controller.MoreController
 import com.kpstv.navigation.*
 import dagger.hilt.android.AndroidEntryPoint
-import extensions.hide
-import extensions.show
+import com.comicreader.comicray.extensions.hide
+import com.comicreader.comicray.extensions.show
 import kotlinx.parcelize.Parcelize
 
 @AndroidEntryPoint
@@ -36,7 +36,7 @@ class MoreFragment : ValueFragment(R.layout.fragment_genre) {
             viewModel.getGenreData(args.tag, args.type)
         } else if (isSearchArgs) {
             val args = getKeyArgs<SearchArgs>()
-            binding.toolbar.title = getString(R.string.search_on, args)
+            binding.toolbar.title = getString(R.string.search_on, args.query)
             viewModel.getSearchData(args.query, args.type)
         } else throw IllegalStateException("Unhandled case")
 
@@ -102,6 +102,14 @@ class MoreFragment : ValueFragment(R.layout.fragment_genre) {
         fun getGenreNavOptions(genre: Genre): FragmentNavigator.NavOptions {
             return FragmentNavigator.NavOptions(
                 args = GenreArgs(name = genre.name, tag = genre.tag, type = genre.type),
+                transaction = FragmentNavigator.TransactionType.ADD,
+                animation = AnimationDefinition.SlideInRight,
+                remember = true
+            )
+        }
+        fun getSearchNavOptions(query: String, type: BookType): FragmentNavigator.NavOptions {
+            return FragmentNavigator.NavOptions(
+                args = SearchArgs(query = query, type = type),
                 transaction = FragmentNavigator.TransactionType.ADD,
                 animation = AnimationDefinition.SlideInRight,
                 remember = true

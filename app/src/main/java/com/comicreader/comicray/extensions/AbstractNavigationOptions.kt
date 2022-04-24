@@ -1,4 +1,4 @@
-package extensions
+package com.comicreader.comicray.extensions
 
 // Consuming navigation event is important as it could duplicate
 // navigation to the same destination if configuration change happens.

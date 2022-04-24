@@ -7,8 +7,8 @@ import com.airbnb.epoxy.EpoxyModelClass
 import com.airbnb.epoxy.EpoxyModelWithHolder
 import com.comicreader.comicray.R
 import com.comicreader.comicray.databinding.OverlineBinding
-import extensions.hide
-import extensions.show
+import com.comicreader.comicray.extensions.hide
+import com.comicreader.comicray.extensions.show
 
 @EpoxyModelClass(layout = R.layout.overline)
 abstract class Overline : EpoxyModelWithHolder<Overline.ViewHolder>() {
@@ -25,13 +25,13 @@ abstract class Overline : EpoxyModelWithHolder<Overline.ViewHolder>() {
     override fun bind(holder: ViewHolder) {
         holder.binding.apply {
             titleText.text = value
-            root.isClickable = moreAvailable
             if (moreAvailable) {
                 showMore.show()
+                root.setOnClickListener(listener)
             } else {
                 showMore.hide()
+                root.setOnClickListener(null)
             }
-            root.setOnClickListener(listener)
         }
     }
 

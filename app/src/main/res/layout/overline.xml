@@ -6,8 +6,7 @@
     android:background="?selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:paddingHorizontal="15dp"
-    android:paddingVertical="10dp">
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/titleText"

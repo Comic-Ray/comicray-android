@@ -3,17 +3,22 @@ package com.comicreader.comicray.ui.fragments.comics
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.comicreader.comicray.R
-import com.comicreader.comicray.adapters.ComicAdapter
 import com.comicreader.comicray.controllers.MainScreenController
+import com.comicreader.comicray.data.models.BookType
+import com.comicreader.comicray.data.models.Genre
 import com.comicreader.comicray.databinding.FragmentComicsBinding
+import com.comicreader.comicray.extensions.viewBinding
+import com.comicreader.comicray.ui.activities.MainNavViewModel
+import com.comicreader.comicray.ui.activities.MainRoutes
+import com.comicreader.comicray.ui.fragments.more.MoreFragment
 import com.comicreader.comicray.utils.Constants.Comics
 import com.comicreader.comicray.utils.Event
-import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.ValueFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -21,20 +26,20 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
 
-    private var _binding: FragmentComicsBinding? = null
-    private val binding get() = _binding!!
+    private val binding by viewBinding(FragmentComicsBinding::bind)
 
+    private val navViewModel by activityViewModels<MainNavViewModel>()
     private val viewModel by viewModels<ComicsViewModel>()
-
-//    private lateinit var adapter: ComicAdapter
-
-    private lateinit var controller: MainScreenController
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentComicsBinding.bind(view)
 
-        controller = MainScreenController()
+        val controller = MainScreenController(
+            goToGenre = { genre ->
+                val options = MoreFragment.getGenreNavOptions(genre)
+                navViewModel.navigateTo(MainRoutes.MORE, options)
+            }
+        )
         controller.submitType(Comics)
         binding.recView.setController(controller)
         binding.recView.setHasFixedSize(true)
@@ -46,11 +51,15 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getActionComics().collect { controller.setActionComics(it) }
+            viewModel.getActionComics().collect {
+                controller.addOrReplace(Genre("Action", tag = "action-comic", type = BookType.Comic), it)
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getPopularComics().collect { controller.setPopularComics(it) }
+            viewModel.getPopularComics().collect {
+                controller.addOrReplace(Genre("Popular", tag = "popular-comic", type = BookType.Comic), it)
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -69,15 +78,6 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
                         }
                     }
                 }
-
-                //OLD Working IMPL
-//                launch {
-//                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                        viewModel.getAllComics().collect {
-//                            controller.submitList(it)
-//                        }
-//                    }
-//                }
             }
         }
 
@@ -92,10 +92,5 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
     override fun onStart() {
         super.onStart()
         viewModel.onStart()
-    }
-
-    override fun onDestroy() {
-        _binding = null
-        super.onDestroy()
     }
 }

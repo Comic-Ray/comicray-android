@@ -1,4 +1,4 @@
-package extensions
+package com.comicreader.comicray.extensions
 
 import android.content.Context
 import android.util.TypedValue

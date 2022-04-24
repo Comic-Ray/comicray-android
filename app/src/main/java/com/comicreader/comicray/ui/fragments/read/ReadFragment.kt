@@ -1,7 +1,6 @@
 package com.comicreader.comicray.ui.fragments.read
 
 import android.os.Bundle
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -14,6 +13,7 @@ import com.comicreader.comicray.extensions.viewBinding
 import com.comicreader.comicray.ui.fragments.read.epoxy.ReadController
 import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.ValueFragment
+import com.kpstv.navigation.getKeyArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
 

@@ -4,41 +4,20 @@ import com.airbnb.epoxy.AsyncEpoxyController
 import com.airbnb.epoxy.Carousel
 import com.airbnb.epoxy.carousel
 import com.comicreader.comicray.data.models.DataItem
-import com.comicreader.comicray.data.models.custom.ComicDetails
-import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
+import com.comicreader.comicray.data.models.Genre
+import com.comicreader.comicray.data.models.custom.ComicDetail
 import com.comicreader.comicray.epoxyModels.CardModel_
 import com.comicreader.comicray.epoxyModels.loaderView
 import com.comicreader.comicray.epoxyModels.overline
-import com.comicreader.comicray.utils.Constants.Comics
-import com.comicreader.comicray.utils.ComicGenres
 import com.comicreader.comicray.utils.Constants
-import com.comicreader.comicray.utils.Constants.Comics
 import java.util.concurrent.CopyOnWriteArrayList
 
-class MainScreenController : AsyncEpoxyController() {
+class MainScreenController(private val goToGenre: (Genre) -> Unit) : AsyncEpoxyController() {
 
+    private val dataMap = LinkedHashMap<Genre, List<DataItem>>()
     private var featuredComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
-    private var popularComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
-    private var actionComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
+
     private var comicType: String = ""
-
-    private var trendingManga: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
-    private var comedyManga: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
-    private var adventureManga: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
-    private var dramaManga: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
-
-
-    fun setPopularComics(data: List<DataItem>) {
-        popularComics.clear()
-        popularComics.addAll(data)
-        requestModelBuild()
-    }
-
-    fun setActionComics(data: List<DataItem>) {
-        actionComics.clear()
-        actionComics.addAll(data)
-        requestModelBuild()
-    }
 
     fun setFeaturedComics(data: List<DataItem>) {
         featuredComics.clear()
@@ -46,225 +25,71 @@ class MainScreenController : AsyncEpoxyController() {
         requestModelBuild()
     }
 
-//    fun submitList(data: Map<ComicGenres, CustomData>){
-//        featuredComics.clear()
-//        featuredComics.addAll(data)
-//        requestModelBuild()
-//    }
+    fun addOrReplace(genre: Genre, data: List<DataItem>) {
+        this.dataMap[genre] = data
+        requestModelBuild()
+    }
 
     fun submitType(comicType: String) {
         this.comicType = comicType
     }
 
-    //manga funcs
-    fun submitTrendingManga(data: List<ComicDetails>) {
-        trendingManga.clear()
-        trendingManga.addAll(data)
-        requestModelBuild()
-    }
-
-    fun submitComedyManga(data: List<ComicDetails>) {
-        comedyManga.clear()
-        comedyManga.addAll(data)
-        requestModelBuild()
-    }
-
-    fun submitAdventureManga(data: List<ComicDetails>) {
-        adventureManga.clear()
-        adventureManga.addAll(data)
-        requestModelBuild()
-    }
-
-    fun submitDramaManga(data: List<ComicDetails>) {
-        dramaManga.clear()
-        dramaManga.addAll(data)
-        requestModelBuild()
-    }
-
-//    fun submitList(data: Map<ComicGenres, CustomData>){
-//        featuredComics.clear()
-//        actionComics.clear()
-//        popularComics.clear()
-//
-//        data[ComicGenres.Featured]?.let { featuredComics.addAll(it.comics) }
-//        data[ComicGenres.Action]?.let { actionComics.addAll(it.comics) }
-//        data[ComicGenres.Popular]?.let { popularComics.addAll(it.comics) }
-//        requestModelBuild()
-//    }
-
     fun submitEmptyList() {
         featuredComics.clear()
-        popularComics.clear()
-        actionComics.clear()
-        requestModelBuild()
-    }
-
-    fun submitEmptyListManga() {
-        trendingManga.clear()
-        comedyManga.clear()
-        adventureManga.clear()
-        dramaManga.clear()
+        dataMap.clear()
         requestModelBuild()
     }
 
     override fun buildModels() {
         Carousel.setDefaultGlobalSnapHelperFactory(null)
-        if (this.comicType == Constants.Comics) {
 
-            if (featuredComics.isNullOrEmpty() && popularComics.isNullOrEmpty() && actionComics.isNullOrEmpty()) {
-                loaderView {
-                    id("All-comics")
-                    titleText("Featured")
-                    titleText2("Popular")
-                    titleText3("Action")
-                }
+        if (featuredComics.isEmpty() && dataMap.isEmpty()) {
+            loaderView {
+                id("loader-view")
+                titleText("Featured")
+                titleText2("Popular")
+                titleText3("Action")
             }
+            return
+        }
 
-            if (featuredComics.isNotEmpty()) {
-                overline {
-                    id("featuredComic")
-                    value("Featured Comics")
-                }
-
-                carousel {
-                    id("id-feat-comics")
-                    models(this@MainScreenController.featuredComics.map { item ->
-                        CardModel_().id("featured-comics-id:" + item.title)
-                            .title(item.title)
-                            .urlToImage(item.imageUrl)
-                            .listener { _ ->
-
-                            }
-                    })
-                }
+        if (featuredComics.isNotEmpty()) {
+            overline {
+                id("featuredComic")
+                value("Featured Comics")
+                moreAvailable(false)
             }
+            carousel {
+                id("id-feat-comics")
+                models(this@MainScreenController.featuredComics.map { item ->
+                    CardModel_().id("featured-comics-id:" + item.title)
+                        .title(item.title)
+                        .urlToImage(item.imageUrl)
+                        .listener { _ ->
 
-            if (popularComics.isNotEmpty()) {
-                overline {
-                    id("popularComics")
-                    value("Popular Comics")
-                }
-
-                carousel {
-                    id("Popular_Carousel")
-                    models(this@MainScreenController.popularComics.map {
-                        CardModel_().id("id" + it.title)
-                            .title(it.title)
-                            .urlToImage(it.imageUrl)
-                            .listener { _ ->
-
-                            }
-                    })
-                }
-
+                        }
+                })
             }
+        }
 
-            if (actionComics.isNotEmpty()) {
-                overline {
-                    id("actionComics")
-                    value("Action Comics")
-                }
-
-                carousel {
-                    id("Action_Carousel")
-                    models(this@MainScreenController.actionComics.map {
-                        CardModel_().id("id" + it.title)
-                            .title(it.title)
-                            .urlToImage(it.imageUrl)
-                            .listener { _ ->
-
-                            }
-                    })
-                }
+        for((genre, data) in dataMap) {
+            overline {
+                id("overline" + genre.name + genre.tag)
+                value(genre.name)
+                moreAvailable(true)
+                listener { _ -> this@MainScreenController.goToGenre(genre) }
             }
-
-        } else {
-
-            if (trendingManga.isNullOrEmpty() && comedyManga.isNullOrEmpty() && adventureManga.isNullOrEmpty() && dramaManga.isNullOrEmpty()) {
-                loaderView {
-                    id("AllManga")
-                    titleText("Trending")
-                    titleText2("Comedy")
-                    titleText3("Adventure")
-                }
+            carousel {
+                id("carousal" + genre.name + genre.tag)
+                models(data.map {
+                    CardModel_().id("id" + it.title)
+                        .title(it.title)
+                        .urlToImage(it.imageUrl)
+                        .listener { _ ->
+                            // TODO: Add listener
+                        }
+                })
             }
-
-            if (!trendingManga.isNullOrEmpty()) {
-                overline {
-                    id("trendingManga")
-                    value("Trending")
-                }
-
-                carousel {
-                    id("trending_carousel")
-                    models(this@MainScreenController.trendingManga.map { item ->
-                        CardModel_().id("trending-comic-id:" + item.title)
-                            .title(item.title)
-                            .urlToImage(item.imageUrl)
-                            .listener { _ ->
-
-                            }
-                    })
-                }
-            }
-
-            if (!comedyManga.isNullOrEmpty()) {
-                overline {
-                    id("comedyManga")
-                    value("Comedy")
-                }
-
-                carousel {
-                    id("comedy_carousel")
-                    models(this@MainScreenController.comedyManga.map { item ->
-                        CardModel_().id("comedy-id:" + item.title)
-                            .title(item.title)
-                            .urlToImage(item.imageUrl)
-                            .listener { _ ->
-
-                            }
-                    })
-                }
-            }
-
-            if (!adventureManga.isNullOrEmpty()) {
-                overline {
-                    id("adventureManga")
-                    value("Adventure")
-                }
-
-                carousel {
-                    id("adventure_carousel")
-                    models(this@MainScreenController.adventureManga.map { item ->
-                        CardModel_().id("adventure-id:" + item.title)
-                            .title(item.title)
-                            .urlToImage(item.imageUrl)
-                            .listener { _ ->
-
-                            }
-                    })
-                }
-            }
-
-            if (!dramaManga.isNullOrEmpty()) {
-                overline {
-                    id("actionManga")
-                    value("Drama")
-                }
-
-                carousel {
-                    id("action-carousel")
-                    models(this@MainScreenController.dramaManga.map { item ->
-                        CardModel_().id("drama-id:" + item.title)
-                            .title(item.title)
-                            .urlToImage(item.imageUrl)
-                            .listener { _ ->
-
-                            }
-                    })
-                }
-            }
-
-        }//end of else
+        }
     }
 }

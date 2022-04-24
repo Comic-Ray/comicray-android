@@ -15,7 +15,8 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 class SearchController(
     private val context: Context,
-    private val goToGenre: (Genre) -> Unit
+    private val goToGenre: (Genre) -> Unit,
+    private val goToMoreSearch: (type: BookType) -> Unit,
 ) : EpoxyController() {
 
     private val comicGenres = CopyOnWriteArrayList<Genre.Comic>()
@@ -48,17 +49,16 @@ class SearchController(
     override fun buildModels() {
         val context = this@SearchController.context
 
-        spacer {
-            id("comic-spacer-height")
-            heightDp(10f)
-        }
-
         val searches = this.searches
 
         if (searches != null && searches.isEmpty()) {
-            progressBar { id("load-progress") }
             spacer {
                 id("progress-spacer")
+                heightDp(10f)
+            }
+            progressBar { id("load-progress") }
+            spacer {
+                id("progress-spacer2")
                 heightDp(10f)
             }
         } else if (searches?.isNotEmpty() == true) {
@@ -76,6 +76,7 @@ class SearchController(
                         id("comic-search-header")
                         value(context.getString(R.string.comics))
                         moreAvailable(comicSearches.totalPages > 1)
+                        listener { _ -> this@SearchController.goToMoreSearch(BookType.Comic) }
                     }
                     carousel {
                         id("comic-search-results")
@@ -83,7 +84,7 @@ class SearchController(
                             CardModel_().id(model.title.hashCode())
                                 .title(model.title)
                                 .urlToImage(model.imageUrl)
-                                .listener { _ -> }
+                                .listener { _ ->  }
                         })
                     }
                 }
@@ -92,6 +93,7 @@ class SearchController(
                         id("manga-search-header")
                         value(context.getString(R.string.manga))
                         moreAvailable(mangaSearches.totalPages > 1)
+                        listener { _ -> this@SearchController.goToMoreSearch(BookType.Manga) }
                     }
                     carousel {
                         id("manga-search-results")
@@ -99,10 +101,15 @@ class SearchController(
                             CardModel_().id(model.title.hashCode())
                                 .title(model.title)
                                 .urlToImage(model.imageUrl)
-                                .listener { _ -> }
+                                .listener { _ -> this@SearchController.goToMoreSearch(BookType.Manga) }
                         })
                     }
                 }
+            }
+        } else {
+            spacer {
+                id("empty-spacer")
+                heightDp(10f)
             }
         }
 

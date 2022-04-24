@@ -7,7 +7,7 @@ import com.comicreader.comicray.databinding.ActivityMainBinding
 import com.comicreader.comicray.ui.fragments.main.MainFragment
 import com.kpstv.navigation.*
 import dagger.hilt.android.AndroidEntryPoint
-import extensions.AbstractNavigationOptionsExtensions.consume
+import com.comicreader.comicray.extensions.AbstractNavigationOptionsExtensions.consume
 
 
 @AndroidEntryPoint
