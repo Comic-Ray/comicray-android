@@ -5,7 +5,7 @@
 
 ***You can Install latest app from below***
 
-[![ComicRay App](https://img.shields.io/badge/ComicRay-APK-blue.svg?style=for-the-badge&logo=android&color=blue)](https://github.com/KaustubhPatange/Comic-Ray/releases/latest)
+[![ComicRay App](https://img.shields.io/badge/ComicRay-APK-blue.svg?style=for-the-badge&logo=android&color=blue)](https://github.com/Comic-Ray/comicray-android/releases/download/v1/ComicRay.apk)
 
 ## Built With 🛠
 
