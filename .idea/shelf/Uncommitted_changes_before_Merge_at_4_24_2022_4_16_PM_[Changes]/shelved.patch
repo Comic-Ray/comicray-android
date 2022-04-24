@@ -1,0 +1,477 @@
+Index: app/src/main/java/com/comicreader/comicray/data/repositories/ComicRepository.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.comicreader.comicray.data.repositories\r\n\r\nimport androidx.room.withTransaction\r\nimport com.comicreader.comicray.api.ComicApi\r\nimport com.comicreader.comicray.data.models.custom.GenreResponse\r\nimport com.comicreader.comicray.data.models.featuredcomic.FeaturedComic\r\nimport com.comicreader.comicray.db.ComicDatabase\r\nimport com.comicreader.comicray.utils.Resource\r\nimport com.comicreader.comicray.utils.networkBoundResource\r\nimport kotlinx.coroutines.flow.Flow\r\nimport retrofit2.HttpException\r\nimport java.io.IOException\r\nimport javax.inject.Inject\r\n\r\nclass ComicRepository @Inject constructor(\r\n    private val comicApi: ComicApi,\r\n    private val comicDb: ComicDatabase\r\n) {\r\n\r\n    fun getFeaturedComics(\r\n        forceRefresh: Boolean,\r\n        fetchSuccess: () -> Unit,\r\n        onFetchFailed: (Throwable) -> Unit\r\n    ): Flow<Resource<List<FeaturedComic>>> = networkBoundResource(\r\n        query = {\r\n            val query = comicDb.homeComicDao().getFeaturedComics()\r\n            query\r\n        },\r\n        fetch = {\r\n            val data = comicApi.getFeaturedComics()\r\n            data\r\n        },\r\n        saveFetchResult = {\r\n            comicDb.withTransaction {\r\n                comicDb.homeComicDao().deleteFeaturedComics()\r\n                comicDb.homeComicDao().insertFeaturedComics(it)\r\n            }\r\n        },\r\n        shouldFetch = { featuredComics -> //it : List<FeaturedComic>\r\n            if (forceRefresh) {\r\n                true\r\n            } else {\r\n                //todo refresh the data after sometimes\r\n                val cachedComics = featuredComics.isEmpty()\r\n                cachedComics\r\n            }\r\n        },\r\n        onFetchSuccess = fetchSuccess,\r\n        onFetchFailed = {\r\n            if (it !is HttpException && it !is IOException) {\r\n                throw it\r\n            }\r\n            onFetchFailed(it)\r\n        }\r\n    )\r\n\r\n\r\n    fun getGenreComics(\r\n        forceRefresh: Boolean,\r\n        tag: String,\r\n        type: String,\r\n        fetchSuccess: () -> Unit,\r\n        onFetchFailed: (Throwable) -> Unit\r\n    ): Flow<Resource<GenreResponse>> = networkBoundResource(\r\n        query = {\r\n            val query = comicDb.homeComicDao().getGenreComicsResponse(tag, type)\r\n            query\r\n        },\r\n        fetch = {\r\n            val data = comicApi.getGenreComics(tag, 1)\r\n            data\r\n        },\r\n        saveFetchResult = {\r\n//                val comicsWithTag = CustomData(tag, it.data)\r\n            val c = GenreResponse(\r\n                tag = tag,\r\n                data = it.data,\r\n                page = it.page,\r\n                totalPages = it.totalPages,\r\n                Comictype = type\r\n            )\r\n            comicDb.withTransaction {\r\n                comicDb.homeComicDao().deleteGenreComicsResponse(tag, type)\r\n//                    comicDb.homeComicDao().insertGenreComics(comicsWithTag)\r\n                comicDb.homeComicDao().insertGenreComicsResponse(c)\r\n            }\r\n        },\r\n        shouldFetch = { genreResponse ->\r\n            if (forceRefresh) {\r\n                true\r\n            } else {\r\n                if (genreResponse != null) {\r\n                    val data = genreResponse.data.isEmpty()\r\n                    data\r\n                } else {\r\n                    true\r\n                }\r\n            }\r\n        },\r\n        onFetchSuccess = fetchSuccess,\r\n        onFetchFailed = {\r\n            if (it !is HttpException && it !is IOException) {\r\n                throw it\r\n            }\r\n            onFetchFailed(it)\r\n        }\r\n    )\r\n\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/comicreader/comicray/data/repositories/ComicRepository.kt b/app/src/main/java/com/comicreader/comicray/data/repositories/ComicRepository.kt
+--- a/app/src/main/java/com/comicreader/comicray/data/repositories/ComicRepository.kt	(revision 2882c76547b0440b503543192cd9a68f426697c5)
++++ b/app/src/main/java/com/comicreader/comicray/data/repositories/ComicRepository.kt	(date 1650792807760)
+@@ -2,14 +2,17 @@
+ 
+ import androidx.room.withTransaction
+ import com.comicreader.comicray.api.ComicApi
++import com.comicreader.comicray.data.models.comicDetails.ComicDetailsResponse
+ import com.comicreader.comicray.data.models.custom.GenreResponse
+ import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
+ import com.comicreader.comicray.db.ComicDatabase
+ import com.comicreader.comicray.utils.Resource
+ import com.comicreader.comicray.utils.networkBoundResource
+ import kotlinx.coroutines.flow.Flow
++import kotlinx.coroutines.flow.flow
+ import retrofit2.HttpException
+ import java.io.IOException
++import java.lang.Exception
+ import javax.inject.Inject
+ 
+ class ComicRepository @Inject constructor(
+@@ -106,5 +109,14 @@
+         }
+     )
+ 
++    fun getComicDetails(url: String) : Flow<Resource<ComicDetailsResponse>> = flow<Resource<ComicDetailsResponse>>{
++        try {
++            val data = comicApi.getComicDetails(url)
++            emit(Resource.Success(data))
++        }catch (e: Exception){
++            emit(Resource.Error(e))
++        }
++    }
++
+ 
+ }
+\ No newline at end of file
+Index: app/src/main/res/layout/fragment_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<LinearLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:orientation=\"vertical\">\r\n\r\n    <androidx.fragment.app.FragmentContainerView\r\n        android:id=\"@+id/fragment_container\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"0dp\"\r\n        android:layout_weight=\"1\" />\r\n\r\n    <Button\r\n        android:id=\"@+id/btn_genre\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"Open genre\" />\r\n\r\n    <com.google.android.material.bottomnavigation.BottomNavigationView\r\n        android:id=\"@+id/bottom_nav_view\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        app:menu=\"@menu/bottom_nav_menu\" />\r\n\r\n\r\n</LinearLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/fragment_main.xml b/app/src/main/res/layout/fragment_main.xml
+--- a/app/src/main/res/layout/fragment_main.xml	(revision 2882c76547b0440b503543192cd9a68f426697c5)
++++ b/app/src/main/res/layout/fragment_main.xml	(date 1650795628225)
+@@ -17,6 +17,12 @@
+         android:layout_height="wrap_content"
+         android:text="Open genre" />
+ 
++    <Button
++        android:id="@+id/btn_comic"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:text="Open Comic" />
++
+     <com.google.android.material.bottomnavigation.BottomNavigationView
+         android:id="@+id/bottom_nav_view"
+         android:layout_width="match_parent"
+Index: app/src/main/java/com/comicreader/comicray/ui/fragments/DetailsFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/comicreader/comicray/ui/fragments/DetailsFragment.kt b/app/src/main/java/com/comicreader/comicray/ui/fragments/detailsFrag/DetailsFragment.kt
+rename from app/src/main/java/com/comicreader/comicray/ui/fragments/DetailsFragment.kt
+rename to app/src/main/java/com/comicreader/comicray/ui/fragments/detailsFrag/DetailsFragment.kt
+--- a/app/src/main/java/com/comicreader/comicray/ui/fragments/DetailsFragment.kt	(revision 2882c76547b0440b503543192cd9a68f426697c5)
++++ b/app/src/main/java/com/comicreader/comicray/ui/fragments/detailsFrag/DetailsFragment.kt	(date 1650796633020)
+@@ -1,21 +1,36 @@
+-package com.comicreader.comicray.ui.fragments
++package com.comicreader.comicray.ui.fragments.detailsFrag
+ 
+ import android.os.Bundle
+-import androidx.fragment.app.Fragment
+ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
+-import androidx.viewbinding.ViewBinding
++import android.widget.Toast
++import androidx.fragment.app.viewModels
++import androidx.lifecycle.Lifecycle
++import androidx.lifecycle.lifecycleScope
++import androidx.lifecycle.repeatOnLifecycle
++import com.bumptech.glide.Glide
+ import com.comicreader.comicray.R
++import com.comicreader.comicray.data.models.BookType
++import com.comicreader.comicray.data.models.comicDetails.ComicDetailsResponse
+ import com.comicreader.comicray.databinding.FragmentDetailsBinding
+ import com.comicreader.comicray.extensions.viewBinding
++import com.comicreader.comicray.ui.fragments.detailsFrag.controller.DetailsController
++import com.comicreader.comicray.utils.Resource
++import com.kpstv.navigation.*
+ import dagger.hilt.android.AndroidEntryPoint
++import kotlinx.coroutines.launch
++import kotlinx.parcelize.Parcelize
+ 
+ @AndroidEntryPoint
+-class DetailsFragment : Fragment() {
++class DetailsFragment : ValueFragment() {
+ 
+     private val binding by viewBinding(FragmentDetailsBinding::bind)
+ 
++    private val viewModel: DetailsViewModel by viewModels()
++
++    private lateinit var detailsController: DetailsController
++
+     override fun onCreateView(
+         inflater: LayoutInflater, container: ViewGroup?,
+         savedInstanceState: Bundle?
+@@ -23,5 +38,73 @@
+         return inflater.inflate(R.layout.fragment_details, container, false)
+     }
+ 
++    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
++        super.onViewCreated(view, savedInstanceState)
++
++        detailsController = DetailsController()
++
++        val args = getKeyArgs<DetailsArgs>()
++
++        viewModel.onFetch(args.url, args.type)
++
++        if (args.type == BookType.Comic){
++            viewLifecycleOwner.lifecycleScope.launch {
++                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
++                    launch {
++                        viewModel.detailsComic.collect{
++                            when(it){
++                                is Resource.Loading ->{
++                                    binding.swipeRefreshLayout.isRefreshing = true
++                                }
++
++                                is Resource.Success -> {
++                                    binding.swipeRefreshLayout.isRefreshing = false
++                                    setComicDetails(it.data!!)
++                                }
++
++                                is Resource.Error -> {
++                                    binding.swipeRefreshLayout.isRefreshing = false
++                                    Toast.makeText(context,"${it.throwable?.localizedMessage}",Toast.LENGTH_SHORT).show()
++                                }
++                            }
++                        }
++                    }
++                }
++            }
++        }//end of comic
++        else{
++
++        }
++
++        binding.swipeRefreshLayout.setOnRefreshListener {
++            viewModel.onFetch(args.url,args.type)
++        }
++    }
++
++    private fun setComicDetails(data: ComicDetailsResponse){
++        binding.txtTitle.text = data.title
++        binding.descriptiontxt.text = data.summary
++        Glide.with(binding.imgView)
++            .load(data.imageUrl)
++            .into(binding.imgView)
++        detailsController.submitComicChapters(data.issues)
++        binding.recView.setController(detailsController)
++        binding.recView.setHasFixedSize(true)
++    }
++
++    @Parcelize
++    data class DetailsArgs(val name: String, val url: String, val type: BookType) : BaseArgs()
++
++    companion object {
++        fun FragmentNavigator.gotoDetails(name: String, url: String, type: BookType) {
++            val options = FragmentNavigator.NavOptions(
++                args = DetailsArgs(name = name, url = url, type = type),
++                transaction = FragmentNavigator.TransactionType.REPLACE,
++                animation = AnimationDefinition.SlideInRight,
++                remember = true
++            )
++            navigateTo(DetailsFragment::class, options)
++        }
++    }
+ 
+ }
+\ No newline at end of file
+Index: app/src/main/res/layout/fragment_details.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    tools:context=\".ui.fragments.DetailsFragment\">\r\n\r\n    <com.google.android.material.appbar.AppBarLayout\r\n        android:id=\"@+id/appBar\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:fitsSystemWindows=\"true\"\r\n        app:elevation=\"-10dp\">\r\n\r\n        <com.google.android.material.appbar.CollapsingToolbarLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:fitsSystemWindows=\"true\"\r\n            app:layout_scrollFlags=\"scroll\">\r\n\r\n            <RelativeLayout\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"wrap_content\"\r\n                app:layout_collapseMode=\"pin\">\r\n\r\n                <ImageView\r\n                    android:id=\"@+id/imgView\"\r\n                    android:layout_width=\"@dimen/dimen_150dp\"\r\n                    android:layout_height=\"180dp\"\r\n                    android:layout_centerHorizontal=\"true\"\r\n                    android:layout_marginTop=\"@dimen/dimen_10dp\"\r\n                    tools:src=\"@color/black\" />\r\n\r\n                <TextView\r\n                    android:id=\"@+id/txtTitle\"\r\n                    android:layout_width=\"wrap_content\"\r\n                    android:layout_height=\"wrap_content\"\r\n                    android:layout_below=\"@id/imgView\"\r\n                    android:layout_centerHorizontal=\"true\"\r\n                    android:layout_marginTop=\"@dimen/dimen_10dp\"\r\n                    android:textSize=\"20sp\"\r\n                    android:textStyle=\"bold\"\r\n                    tools:text=\"Title of the Comics\" />\r\n\r\n                <TextView\r\n                    android:id=\"@+id/description\"\r\n                    android:layout_width=\"match_parent\"\r\n                    android:layout_height=\"wrap_content\"\r\n                    android:layout_below=\"@id/txtTitle\"\r\n                    android:layout_margin=\"8dp\"\r\n                    android:textSize=\"18sp\"\r\n                    tools:text=\"jncsjdnj dnscknskdn\" />\r\n\r\n                <TextView\r\n                    android:id=\"@+id/txtEpisodes\"\r\n                    android:layout_width=\"wrap_content\"\r\n                    android:layout_height=\"wrap_content\"\r\n                    android:layout_below=\"@+id/description\"\r\n                    android:layout_margin=\"5dp\"\r\n                    android:text=\"Episodes:\"\r\n                    android:textSize=\"20sp\"\r\n                    android:textStyle=\"bold\"\r\n                    app:layout_anchorGravity=\"bottom\" />\r\n\r\n            </RelativeLayout>\r\n\r\n        </com.google.android.material.appbar.CollapsingToolbarLayout>\r\n    </com.google.android.material.appbar.AppBarLayout>\r\n\r\n\r\n    <androidx.recyclerview.widget.RecyclerView\r\n        android:id=\"@+id/recView\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_gravity=\"bottom\"\r\n        android:clipChildren=\"false\"\r\n        app:layout_anchor=\"@id/appBar\"\r\n        app:layout_anchorGravity=\"bottom\"\r\n        app:layout_behavior=\"com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior\" />\r\n\r\n</androidx.coordinatorlayout.widget.CoordinatorLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/fragment_details.xml b/app/src/main/res/layout/fragment_details.xml
+--- a/app/src/main/res/layout/fragment_details.xml	(revision 2882c76547b0440b503543192cd9a68f426697c5)
++++ b/app/src/main/res/layout/fragment_details.xml	(date 1650796880959)
+@@ -1,82 +1,118 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
++    android:layout_width="match_parent"
+     xmlns:tools="http://schemas.android.com/tools"
+-    android:layout_width="match_parent"
+-    android:layout_height="match_parent"
+-    tools:context=".ui.fragments.DetailsFragment">
++    android:id="@+id/swipeRefreshLayout"
++    android:layout_height="wrap_content">
++
++    <RelativeLayout
++        android:layout_width="match_parent"
++        android:layout_height="match_parent">
++
++        <androidx.coordinatorlayout.widget.CoordinatorLayout
++            android:layout_width="match_parent"
++            android:id="@+id/coLayout"
++            android:layout_height="wrap_content">
+ 
+-    <com.google.android.material.appbar.AppBarLayout
+-        android:id="@+id/appBar"
+-        android:layout_width="match_parent"
+-        android:layout_height="wrap_content"
+-        android:fitsSystemWindows="true"
+-        app:elevation="-10dp">
++            <com.google.android.material.appbar.AppBarLayout
++                android:id="@+id/appBar"
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:fitsSystemWindows="true"
++                app:elevation="-10dp">
+ 
+-        <com.google.android.material.appbar.CollapsingToolbarLayout
+-            android:layout_width="match_parent"
+-            android:layout_height="wrap_content"
+-            android:fitsSystemWindows="true"
+-            app:layout_scrollFlags="scroll">
++                <com.google.android.material.appbar.CollapsingToolbarLayout
++                    android:layout_width="match_parent"
++                    android:layout_height="wrap_content"
++                    android:fitsSystemWindows="true"
++                    app:layout_scrollFlags="scroll">
+ 
+-            <RelativeLayout
+-                android:layout_width="match_parent"
+-                android:layout_height="wrap_content"
+-                app:layout_collapseMode="pin">
++                    <androidx.cardview.widget.CardView
++                        android:layout_width="match_parent"
++                        android:layout_height="wrap_content">
++
++
++                        <RelativeLayout
++                            android:layout_width="match_parent"
++                            android:layout_height="wrap_content"
++                            app:layout_collapseMode="parallax">
+ 
+-                <ImageView
+-                    android:id="@+id/imgView"
+-                    android:layout_width="@dimen/dimen_150dp"
+-                    android:layout_height="180dp"
+-                    android:layout_centerHorizontal="true"
+-                    android:layout_marginTop="@dimen/dimen_10dp"
+-                    tools:src="@color/black" />
++                            <ImageView
++                                android:id="@+id/imgView"
++                                android:layout_width="150dp"
++                                android:layout_height="180dp"
++                                android:layout_alignParentStart="true"
++                                android:layout_marginStart="@dimen/dimen_10dp"
++                                android:layout_marginTop="10dp"
++                                tools:src="@color/black" />
+ 
+-                <TextView
+-                    android:id="@+id/txtTitle"
+-                    android:layout_width="wrap_content"
+-                    android:layout_height="wrap_content"
+-                    android:layout_below="@id/imgView"
+-                    android:layout_centerHorizontal="true"
+-                    android:layout_marginTop="@dimen/dimen_10dp"
+-                    android:textSize="20sp"
+-                    android:textStyle="bold"
+-                    tools:text="Title of the Comics" />
++                            <TextView
++                                android:id="@+id/txtTitle"
++                                android:layout_width="wrap_content"
++                                android:layout_height="wrap_content"
++                                android:layout_marginStart="@dimen/dimen_10dp"
++                                android:layout_marginTop="20dp"
++                                android:layout_toEndOf="@+id/imgView"
++                                android:textSize="20sp"
++                                android:textStyle="bold"
++                                tools:text="Title of the Comics omic eeb cimcu isc " />
++
++                            <com.google.android.material.chip.Chip
++                                android:layout_width="wrap_content"
++                                android:layout_height="wrap_content"
++                                android:layout_below="@+id/txtTitle"
++                                android:layout_toEndOf="@+id/imgView" />
+ 
+-                <TextView
+-                    android:id="@+id/description"
+-                    android:layout_width="match_parent"
+-                    android:layout_height="wrap_content"
+-                    android:layout_below="@id/txtTitle"
+-                    android:layout_margin="8dp"
+-                    android:textSize="18sp"
+-                    tools:text="jncsjdnj dnscknskdn" />
++                            <TextView
++                                android:id="@+id/description"
++                                android:layout_width="match_parent"
++                                android:layout_height="wrap_content"
++                                android:layout_below="@+id/imgView"
++                                android:layout_margin="8dp"
++                                android:text="Description"
++                                android:textSize="18sp" />
++
++                            <TextView
++                                android:id="@+id/descriptiontxt"
++                                android:layout_width="match_parent"
++                                android:layout_height="wrap_content"
++                                android:layout_below="@+id/description"
++                                android:layout_marginHorizontal="8dp"
++                                android:textSize="18sp"
++                                tools:text="jncsjdnj_dnscknskdn" />
+ 
+-                <TextView
+-                    android:id="@+id/txtEpisodes"
+-                    android:layout_width="wrap_content"
+-                    android:layout_height="wrap_content"
+-                    android:layout_below="@+id/description"
+-                    android:layout_margin="5dp"
+-                    android:text="Episodes:"
+-                    android:textSize="20sp"
+-                    android:textStyle="bold"
+-                    app:layout_anchorGravity="bottom" />
++                            <TextView
++                                android:id="@+id/txtEpisodes"
++                                android:layout_width="wrap_content"
++                                android:layout_height="wrap_content"
++                                android:layout_below="@+id/descriptiontxt"
++                                android:layout_margin="5dp"
++                                android:text="Episodes:"
++                                android:textSize="20sp"
++                                android:textStyle="bold"
++                                app:layout_anchorGravity="bottom" />
+ 
+-            </RelativeLayout>
++                        </RelativeLayout>
++                    </androidx.cardview.widget.CardView>
+ 
+-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+-    </com.google.android.material.appbar.AppBarLayout>
++                </com.google.android.material.appbar.CollapsingToolbarLayout>
++
++            </com.google.android.material.appbar.AppBarLayout>
+ 
++        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+ 
+-    <androidx.recyclerview.widget.RecyclerView
+-        android:id="@+id/recView"
+-        android:layout_width="match_parent"
+-        android:layout_height="wrap_content"
+-        android:layout_gravity="bottom"
+-        android:clipChildren="false"
+-        app:layout_anchor="@id/appBar"
+-        app:layout_anchorGravity="bottom"
+-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
++        <com.airbnb.epoxy.EpoxyRecyclerView
++            android:id="@+id/recView"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:layout_gravity="bottom"
++            android:clipChildren="false"
++            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
++            android:layout_below="@+id/coLayout"
++            app:layout_anchorGravity="bottom"
++            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+ 
+-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+\ No newline at end of file
++    </RelativeLayout>
++
++</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+Index: app/src/main/java/com/comicreader/comicray/ui/fragments/main/MainFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.comicreader.comicray.ui.fragments.main\r\n\r\nimport android.os.Bundle\r\nimport android.view.View\r\nimport androidx.fragment.app.Fragment\r\nimport com.comicreader.comicray.R\r\nimport com.comicreader.comicray.data.models.BookType\r\nimport com.comicreader.comicray.databinding.FragmentMainBinding\r\nimport com.comicreader.comicray.ui.fragments.comics.ComicsFragment\r\nimport com.comicreader.comicray.ui.fragments.discover.DiscoverFragment\r\nimport com.comicreader.comicray.ui.fragments.genre.GenreFragment.Companion.goToGenre\r\nimport com.comicreader.comicray.ui.fragments.manga.MangaFragment\r\nimport com.kpstv.navigation.BottomNavigationController\r\nimport com.kpstv.navigation.FragmentNavigator\r\nimport com.kpstv.navigation.ValueFragment\r\nimport com.kpstv.navigation.install\r\nimport kotlin.reflect.KClass\r\n\r\nclass MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Transmitter {\r\n\r\n    private lateinit var navigator : FragmentNavigator\r\n    private lateinit var bottomNavController : BottomNavigationController\r\n\r\n    private var _binding : FragmentMainBinding?=null\r\n    private val binding get() = _binding!!\r\n\r\n    override fun getNavigator(): FragmentNavigator = navigator\r\n\r\n    override val forceBackPress: Boolean\r\n        get() = _binding?.bottomNavView?.selectedItemId != R.id.Comics\r\n\r\n\r\n    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {\r\n        super.onViewCreated(view, savedInstanceState)\r\n\r\n        _binding = FragmentMainBinding.bind(view)\r\n\r\n        navigator = FragmentNavigator.with(this,savedInstanceState)\r\n            .initialize(binding.fragmentContainer)\r\n\r\n        bottomNavController = navigator.install(object : FragmentNavigator.BottomNavigation(){\r\n            // The @IdRes of the BottomNavigationView\r\n            override val bottomNavigationViewId: Int = R.id.bottom_nav_view\r\n\r\n            override val bottomNavigationFragments: Map<Int, KClass<out Fragment>> =\r\n                mapOf(\r\n                    R.id.Comics to ComicsFragment::class,\r\n                    R.id.Manga to MangaFragment::class,\r\n                    R.id.Search to DiscoverFragment::class,\r\n                )\r\n\r\n            // Slide from left/right animation when selection is changed.\r\n            override val fragmentNavigationTransition = Animation.SlideHorizontally\r\n        })\r\n\r\n        binding.btnGenre.setOnClickListener {\r\n            parentNavigator.goToGenre(name = \"Action\", tag = \"action-comic\", type = BookType.Comic)\r\n        }\r\n    }\r\n\r\n    override fun onBackPressed(): Boolean {\r\n        if (binding.bottomNavView.selectedItemId != R.id.Comics) {\r\n            bottomNavController.select(R.id.Comics)\r\n            return true\r\n        }\r\n        return super.onBackPressed()\r\n    }\r\n\r\n    override fun onDestroy() {\r\n        _binding = null\r\n        super.onDestroy()\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/comicreader/comicray/ui/fragments/main/MainFragment.kt b/app/src/main/java/com/comicreader/comicray/ui/fragments/main/MainFragment.kt
+--- a/app/src/main/java/com/comicreader/comicray/ui/fragments/main/MainFragment.kt	(revision 2882c76547b0440b503543192cd9a68f426697c5)
++++ b/app/src/main/java/com/comicreader/comicray/ui/fragments/main/MainFragment.kt	(date 1650795686636)
+@@ -7,6 +7,7 @@
+ import com.comicreader.comicray.data.models.BookType
+ import com.comicreader.comicray.databinding.FragmentMainBinding
+ import com.comicreader.comicray.ui.fragments.comics.ComicsFragment
++import com.comicreader.comicray.ui.fragments.detailsFrag.DetailsFragment.Companion.gotoDetails
+ import com.comicreader.comicray.ui.fragments.discover.DiscoverFragment
+ import com.comicreader.comicray.ui.fragments.genre.GenreFragment.Companion.goToGenre
+ import com.comicreader.comicray.ui.fragments.manga.MangaFragment
+@@ -56,6 +57,12 @@
+         binding.btnGenre.setOnClickListener {
+             parentNavigator.goToGenre(name = "Action", tag = "action-comic", type = BookType.Comic)
+         }
++
++        binding.btnComic.setOnClickListener {
++            parentNavigator.gotoDetails("Test", url = "https://www.comicextra.com/comic/batman-2016",type = BookType.Comic)
++        }
++
++
+     }
+ 
+     override fun onBackPressed(): Boolean {
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"DesignSurface\">\r\n    <option name=\"filePathToZoomLevelMap\">\r\n      <map>\r\n        <entry key=\"..\\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/drawable/ic_arrow_forward.xml\" value=\"0.2325\" />\r\n        <entry key=\"..\\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_comics.xml\" value=\"0.197008547008547\" />\r\n        <entry key=\"..\\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_genre.xml\" value=\"0.18547008547008548\" />\r\n        <entry key=\"..\\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_main.xml\" value=\"0.18547008547008548\" />\r\n        <entry key=\"..\\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_manga.xml\" value=\"0.197008547008547\" />\r\n        <entry key=\"..\\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/item_comic.xml\" value=\"0.197008547008547\" />\r\n        <entry key=\"..\\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/loderview.xml\" value=\"0.18547008547008548\" />\r\n        <entry key=\"..\\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/overline.xml\" value=\"0.197008547008547\" />\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_11\" default=\"true\" project-jdk-name=\"11\" project-jdk-type=\"JavaSDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 2882c76547b0440b503543192cd9a68f426697c5)
++++ b/.idea/misc.xml	(date 1650796916395)
+@@ -4,7 +4,9 @@
+     <option name="filePathToZoomLevelMap">
+       <map>
+         <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/drawable/ic_arrow_forward.xml" value="0.2325" />
++        <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/episode_card.xml" value="0.197008547008547" />
+         <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_comics.xml" value="0.197008547008547" />
++        <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_details.xml" value="0.176" />
+         <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_genre.xml" value="0.18547008547008548" />
+         <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_main.xml" value="0.18547008547008548" />
+         <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_manga.xml" value="0.197008547008547" />
+Index: app/src/main/java/com/comicreader/comicray/api/ComicApi.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.comicreader.comicray.api\r\n\r\nimport com.comicreader.comicray.data.models.Genre\r\nimport com.comicreader.comicray.data.models.completedComic.CompletedComic\r\nimport com.comicreader.comicray.data.models.custom.ComicDetails\r\nimport com.comicreader.comicray.data.models.custom.GenreResponse\r\nimport com.comicreader.comicray.data.models.featuredcomic.FeaturedComic\r\nimport com.comicreader.comicray.data.models.ongoingComic.OngoingComic\r\nimport retrofit2.Response\r\nimport retrofit2.http.GET\r\nimport retrofit2.http.Headers\r\nimport retrofit2.http.Query\r\n\r\n\r\ninterface ComicApi {\r\n\r\n    @GET(\"comic/Home/featured\")\r\n    suspend fun getFeaturedComics(): List<FeaturedComic>\r\n\r\n    @GET(\"comic/Home/ongoing\")\r\n    fun getOngoingComics(): Response<List<OngoingComic>>\r\n\r\n    @GET(\"comic/Home/completed\")\r\n    fun getCompletedComics(): Response<List<CompletedComic>>\r\n\r\n    @GET(\"comic/Genre\")\r\n    suspend fun getGenreComics(\r\n        @Query(\"tag\") tag : String,\r\n        @Query(\"page\") page : Int\r\n    ) : GenreResponse\r\n\r\n    @Headers(\"Accept: application/json\")\r\n    @GET(\"manga/Genre\")\r\n    suspend fun getGenreManga(\r\n        @Query(\"type\") tag : String = \"Latest\",\r\n        @Query(\"state\") state : String =  \"All\",\r\n        @Query(\"category\") category : String,\r\n        @Query(\"page\") page : Int = 1\r\n    ) : GenreResponse\r\n\r\n\r\n\r\n\r\n    @GET(\"v1/comic/Genre/list\")\r\n    suspend fun getGenreList() : List<Genre.Comic>\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/comicreader/comicray/api/ComicApi.kt b/app/src/main/java/com/comicreader/comicray/api/ComicApi.kt
+--- a/app/src/main/java/com/comicreader/comicray/api/ComicApi.kt	(revision 2882c76547b0440b503543192cd9a68f426697c5)
++++ b/app/src/main/java/com/comicreader/comicray/api/ComicApi.kt	(date 1650792807744)
+@@ -1,8 +1,8 @@
+ package com.comicreader.comicray.api
+ 
+ import com.comicreader.comicray.data.models.Genre
++import com.comicreader.comicray.data.models.comicDetails.ComicDetailsResponse
+ import com.comicreader.comicray.data.models.completedComic.CompletedComic
+-import com.comicreader.comicray.data.models.custom.ComicDetails
+ import com.comicreader.comicray.data.models.custom.GenreResponse
+ import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
+ import com.comicreader.comicray.data.models.ongoingComic.OngoingComic
+@@ -38,9 +38,11 @@
+         @Query("page") page : Int = 1
+     ) : GenreResponse
+ 
+-
+-
+-
+     @GET("v1/comic/Genre/list")
+     suspend fun getGenreList() : List<Genre.Comic>
++
++    @GET("comic/Detail")
++    suspend fun getComicDetails(
++        @Query("url") url: String
++    ) : ComicDetailsResponse
+ }
+\ No newline at end of file

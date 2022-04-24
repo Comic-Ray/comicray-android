@@ -7,6 +7,7 @@ import com.comicreader.comicray.R
 import com.comicreader.comicray.data.models.BookType
 import com.comicreader.comicray.databinding.FragmentMainBinding
 import com.comicreader.comicray.ui.fragments.comics.ComicsFragment
+import com.comicreader.comicray.ui.fragments.detailsFrag.DetailsFragment.Companion.gotoDetails
 import com.comicreader.comicray.ui.fragments.genre.GenreFragment.Companion.goToGenre
 import com.comicreader.comicray.ui.fragments.manga.MangaFragment
 import com.comicreader.comicray.ui.fragments.search.SearchFragment
@@ -55,6 +56,11 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
 
         binding.btnGenre.setOnClickListener {
             parentNavigator.goToGenre(name = "Action", tag = "action-comic", type = BookType.Comic)
+        }
+
+        binding.btnComic.setOnClickListener {
+            parentNavigator.gotoDetails(name = "Action", url = "https://www.comicextra.com/comic/batman-2016", type = BookType.Comic)
+
         }
     }
 

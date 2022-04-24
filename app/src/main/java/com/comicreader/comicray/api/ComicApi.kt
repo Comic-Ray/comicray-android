@@ -1,6 +1,7 @@
 package com.comicreader.comicray.api
 
 import com.comicreader.comicray.data.models.Genre
+import com.comicreader.comicray.data.models.comicDetails.ComicDetailsResponse
 import com.comicreader.comicray.data.models.completedComic.CompletedComic
 import com.comicreader.comicray.data.models.custom.ComicSearchResponse
 import com.comicreader.comicray.data.models.custom.GenreResponse
@@ -25,26 +26,26 @@ interface ComicApi {
 
     @GET("comic/Genre")
     suspend fun getGenreComics(
-        @Query("tag") tag: String,
-        @Query("page") page: Int
-    ): GenreResponse
+        @Query("tag") tag : String,
+        @Query("page") page : Int
+    ) : GenreResponse
 
-    @Deprecated(message = "Use MangaAPI")
     @Headers("Accept: application/json")
     @GET("manga/Genre")
     suspend fun getGenreManga(
-        @Query("type") tag: String = "Latest",
-        @Query("state") state: String = "All",
-        @Query("category") category: String,
-        @Query("page") page: Int = 1
-    ): GenreResponse
+        @Query("type") tag : String = "Latest",
+        @Query("state") state : String =  "All",
+        @Query("category") category : String,
+        @Query("page") page : Int = 1
+    ) : GenreResponse
+
+
+    @GET("comic/Detail")
+    suspend fun getcomicDetails(
+        @Query("url") url:String
+    ): ComicDetailsResponse
+
 
     @GET("v1/comic/Genre/list")
-    suspend fun getGenreList(): List<Genre.Comic>
-
-    @GET("v1/comic/search")
-    suspend fun getSearch(
-        @Query("query") query: String,
-        @Query("page") page: Int
-    ): ComicSearchResponse
+    suspend fun getGenreList() : List<Genre.Comic>
 }
