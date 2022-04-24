@@ -10,11 +10,14 @@ import com.comicreader.comicray.epoxyModels.CardModel_
 import com.comicreader.comicray.epoxyModels.loaderView
 import com.comicreader.comicray.epoxyModels.overline
 import com.comicreader.comicray.utils.Constants.Comics
+import com.comicreader.comicray.utils.ComicGenres
+import com.comicreader.comicray.utils.Constants
+import com.comicreader.comicray.utils.Constants.Comics
 import java.util.concurrent.CopyOnWriteArrayList
 
 class MainScreenController : AsyncEpoxyController() {
 
-    private var featuredComics: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
+    private var featuredComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
     private var popularComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
     private var actionComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
     private var comicType: String = ""
@@ -37,20 +40,13 @@ class MainScreenController : AsyncEpoxyController() {
         requestModelBuild()
     }
 
-    fun setFeaturedComics(data: List<FeaturedComic>) {
+    fun setFeaturedComics(data: List<DataItem>) {
         featuredComics.clear()
-        featuredComics.addAll(data.map {
-            ComicDetails(
-                title = it.title,
-                url = it.url,
-                imageUrl = it.imageUrl
-            )
-        })
+        featuredComics.addAll(data)
         requestModelBuild()
     }
 
-    //old impl
-//    fun submitList(data: Map<ComicGenres, CustomData>) {
+//    fun submitList(data: Map<ComicGenres, CustomData>){
 //        featuredComics.clear()
 //        featuredComics.addAll(data)
 //        requestModelBuild()
@@ -113,7 +109,7 @@ class MainScreenController : AsyncEpoxyController() {
 
     override fun buildModels() {
         Carousel.setDefaultGlobalSnapHelperFactory(null)
-        if (this.comicType == Comics) {
+        if (this.comicType == Constants.Comics) {
 
             if (featuredComics.isNullOrEmpty() && popularComics.isNullOrEmpty() && actionComics.isNullOrEmpty()) {
                 loaderView {

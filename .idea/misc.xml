@@ -3,17 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/drawable/ic_arrow_forward.xml" value="0.2325" />
-        <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_comics.xml" value="0.197008547008547" />
-        <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_genre.xml" value="0.18547008547008548" />
-        <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_main.xml" value="0.18547008547008548" />
-        <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_manga.xml" value="0.197008547008547" />
-        <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/item_comic.xml" value="0.197008547008547" />
-        <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/loderview.xml" value="0.18547008547008548" />
-        <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/overline.xml" value="0.197008547008547" />
+        <entry key="..\:/AndroidStudioProjects/Source/comicray-android/app/src/main/res/drawable/ic_back.xml" value="0.1655" />
+        <entry key="..\:/AndroidStudioProjects/Source/comicray-android/app/src/main/res/layout/fragment_comics.xml" value="0.2542991141219385" />
+        <entry key="..\:/AndroidStudioProjects/Source/comicray-android/app/src/main/res/layout/fragment_genre.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/Source/comicray-android/app/src/main/res/layout/fragment_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioProjects/Source/comicray-android/app/src/main/res/layout/item_comic.xml" value="0.264" />
       </map>
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_12" default="true" project-jdk-name="12" project-jdk-type="JavaSDK" />
 </project>

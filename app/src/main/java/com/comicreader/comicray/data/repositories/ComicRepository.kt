@@ -2,6 +2,7 @@ package com.comicreader.comicray.data.repositories
 
 import androidx.room.withTransaction
 import com.comicreader.comicray.api.ComicApi
+import com.comicreader.comicray.data.models.Genre
 import com.comicreader.comicray.data.models.custom.GenreResponse
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
 import com.comicreader.comicray.db.ComicDatabase
@@ -106,5 +107,14 @@ class ComicRepository @Inject constructor(
         }
     )
 
+
+    fun getGenreList() : Flow<Resource<List<Genre.Comic>>> = networkBoundResource(
+        query = { comicDb.homeComicDao().getComicGenreList() },
+        fetch = { comicApi.getGenreList() },
+        saveFetchResult = { comicDb.homeComicDao().saveComicGenreList(it) },
+        shouldFetch = { it.firstOrNull()?.isExpired() ?: true },
+        onFetchFailed = {},
+        onFetchSuccess = {}
+    )
 
 }

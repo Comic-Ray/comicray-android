@@ -7,9 +7,9 @@ import com.comicreader.comicray.R
 import com.comicreader.comicray.data.models.BookType
 import com.comicreader.comicray.databinding.FragmentMainBinding
 import com.comicreader.comicray.ui.fragments.comics.ComicsFragment
-import com.comicreader.comicray.ui.fragments.discover.DiscoverFragment
 import com.comicreader.comicray.ui.fragments.genre.GenreFragment.Companion.goToGenre
 import com.comicreader.comicray.ui.fragments.manga.MangaFragment
+import com.comicreader.comicray.ui.fragments.search.SearchFragment
 import com.kpstv.navigation.BottomNavigationController
 import com.kpstv.navigation.FragmentNavigator
 import com.kpstv.navigation.ValueFragment
@@ -46,7 +46,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
                 mapOf(
                     R.id.Comics to ComicsFragment::class,
                     R.id.Manga to MangaFragment::class,
-                    R.id.Search to DiscoverFragment::class,
+                    R.id.Search to SearchFragment::class,
                 )
 
             // Slide from left/right animation when selection is changed.

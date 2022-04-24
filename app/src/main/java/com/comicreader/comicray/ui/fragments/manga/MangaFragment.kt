@@ -57,7 +57,7 @@ class MangaFragment : ValueFragment(R.layout.fragment_manga) {
         binding.swipeRefreshLayout.setOnRefreshListener {
             controller.submitEmptyListManga()
             binding.swipeRefreshLayout.isRefreshing = false
-            viewModel.onManuelRefresh()
+            viewModel.onManualRefresh()
         }
     }
 

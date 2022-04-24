@@ -15,5 +15,4 @@ data class GenreResponse(
     val page: Int,
     val totalPages: Int,
     val Comictype: String
-){
-}
+)

@@ -7,26 +7,34 @@ import com.airbnb.epoxy.EpoxyModelClass
 import com.airbnb.epoxy.EpoxyModelWithHolder
 import com.comicreader.comicray.R
 import com.comicreader.comicray.databinding.OverlineBinding
+import extensions.hide
+import extensions.show
 
 @EpoxyModelClass(layout = R.layout.overline)
-abstract class Overline : EpoxyModelWithHolder<Overline.viewHolder>() {
+abstract class Overline : EpoxyModelWithHolder<Overline.ViewHolder>() {
 
     @EpoxyAttribute
     open var value: String? = null
 
+    @EpoxyAttribute
+    open var moreAvailable = true
+
     @EpoxyAttribute(EpoxyAttribute.Option.IgnoreRequireHashCode)
     open var listener: View.OnClickListener? = null
 
-    override fun bind(holder: viewHolder) {
+    override fun bind(holder: ViewHolder) {
         holder.binding.apply {
             titleText.text = value
-
+            if (moreAvailable) {
+                showMore.show()
+            } else {
+                showMore.hide()
+            }
             showMore.setOnClickListener(listener)
         }
     }
 
-
-    inner class viewHolder() : EpoxyHolder() {
+    inner class ViewHolder : EpoxyHolder() {
 
         lateinit var binding: OverlineBinding
             private set
