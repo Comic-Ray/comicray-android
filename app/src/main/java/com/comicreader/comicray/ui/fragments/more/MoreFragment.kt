@@ -2,6 +2,7 @@ package com.comicreader.comicray.ui.fragments.more
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.comicreader.comicray.R
@@ -14,18 +15,27 @@ import com.kpstv.navigation.*
 import dagger.hilt.android.AndroidEntryPoint
 import com.comicreader.comicray.extensions.hide
 import com.comicreader.comicray.extensions.show
+import com.comicreader.comicray.ui.activities.MainNavViewModel
+import com.comicreader.comicray.ui.activities.MainRoutes
+import com.comicreader.comicray.ui.fragments.detailsFrag.DetailsFragment
 import kotlinx.parcelize.Parcelize
 
 @AndroidEntryPoint
 class MoreFragment : ValueFragment(R.layout.fragment_genre) {
     private val binding by viewBinding(FragmentGenreBinding::bind)
 
+    private val navViewModel by activityViewModels<MainNavViewModel>()
     private val viewModel by viewModels<MoreViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val controller = MoreController()
+        val controller = MoreController(
+            goToDetail = { data ->
+                val options = DetailsFragment.getNavOptions(data.title, data.url, data.type)
+                navViewModel.navigateTo(MainRoutes.DETAIL, options)
+            }
+        )
 
         val isGenreArgs = hasKeyArgs<GenreArgs>()
         val isSearchArgs = hasKeyArgs<SearchArgs>()

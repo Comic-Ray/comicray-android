@@ -27,7 +27,6 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
     override val forceBackPress: Boolean
         get() = binding.bottomNavView.selectedItemId != R.id.Comics
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -44,44 +43,6 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
                 )
             override val fragmentNavigationTransition = Animation.SlideHorizontally
         })
-
-//        binding.btnComic.setOnClickListener {
-//            parentNavigator.gotoDetails(
-//                name = "Action",
-//                url = "https://mangakakalot.com/manga/tu926037",
-//                type = BookType.Manga
-//            )
-//        }
-
-        // TODO(KP): Remove this code once detail screens are implemented.
-
-//        binding.testComicRead.setOnClickListener {
-//            val options = FragmentNavigator.NavOptions(
-//                args = ReadFragment.Args(
-//                    title = TestComicData.title,
-//                    episodeTitle = TestComicData.issueTitle,
-//                    url = TestComicData.url,
-//                    imageList = TestComicData.imageList
-//                ),
-//                animation = AnimationDefinition.Fade,
-//                remember = true,
-//            )
-//            parentNavigator.navigateTo(ReadFragment::class, options)
-//        }
-//
-//        binding.testMangaRead.setOnClickListener {
-//            val options = FragmentNavigator.NavOptions(
-//                args = ReadFragment.Args(
-//                    title = TestMangaData.title,
-//                    episodeTitle = TestMangaData.issueTitle,
-//                    url = TestMangaData.url,
-//                    imageList = TestMangaData.imageList
-//                ),
-//                animation = AnimationDefinition.Fade,
-//                remember = true
-//            )
-//            parentNavigator.navigateTo(ReadFragment::class, options)
-//        }
     }
 
     override fun onBackPressed(): Boolean {

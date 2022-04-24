@@ -30,5 +30,5 @@ interface MangaApi {
     ): MangaDetailsResponse
 
     @GET("v1/manga/Read")
-    suspend fun getReadData(@Query("url") url: String) : MangaReadResponse
+    suspend fun getReadData(@Query("issueUrl") url: String) : MangaReadResponse
 }

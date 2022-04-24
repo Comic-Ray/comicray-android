@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -17,8 +18,11 @@ import com.comicreader.comicray.data.models.comicDetails.ComicDetailsResponse
 import com.comicreader.comicray.data.models.mangaDetails.MangaDetailsResponse
 import com.comicreader.comicray.databinding.FragmentDetailsBinding
 import com.comicreader.comicray.extensions.viewBinding
+import com.comicreader.comicray.ui.activities.MainNavViewModel
+import com.comicreader.comicray.ui.activities.MainRoutes
 import com.comicreader.comicray.ui.fragments.detailsFrag.controller.ChipController
 import com.comicreader.comicray.ui.fragments.detailsFrag.controller.DetailsController
+import com.comicreader.comicray.ui.fragments.read.ReadFragment
 import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,6 +35,7 @@ class DetailsFragment : ValueFragment(R.layout.fragment_details) {
     private val binding by viewBinding(FragmentDetailsBinding::bind)
 
     private val viewModel: DetailsViewModel by viewModels()
+    private val navViewModel by activityViewModels<MainNavViewModel>()
 
     private lateinit var detailsController: DetailsController
 
@@ -44,7 +49,12 @@ class DetailsFragment : ValueFragment(R.layout.fragment_details) {
         chipController = ChipController()
         chipController.submitType(args.type)
 
-        detailsController = DetailsController()
+        detailsController = DetailsController(
+            goToRead = { url, type ->
+                val options = ReadFragment.getNavOptions(url, type)
+                navViewModel.navigateTo(MainRoutes.READ, options)
+            }
+        )
         detailsController.submitType(args.type)
 
         viewModel.onFetch(args.url, args.type)
@@ -117,7 +127,7 @@ class DetailsFragment : ValueFragment(R.layout.fragment_details) {
         Glide.with(binding.imgView)
             .load(data.imageUrl)
             .into(binding.imgView)
-        binding.authortxt.text = data.authors[0].name
+        binding.authortxt.text = data.authors.getOrNull(0)?.name
         binding.statusTxt.text = data.status
 
         //chip impl

@@ -5,6 +5,7 @@ import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.carousel
 import com.comicreader.comicray.R
 import com.comicreader.comicray.data.models.BookType
+import com.comicreader.comicray.data.models.DataItem
 import com.comicreader.comicray.data.models.Genre
 import com.comicreader.comicray.data.models.Genre.Companion.toGenre
 import com.comicreader.comicray.data.models.custom.ComicSearchResponse
@@ -17,6 +18,7 @@ class SearchController(
     private val context: Context,
     private val goToGenre: (Genre) -> Unit,
     private val goToMoreSearch: (type: BookType) -> Unit,
+    private val goToDetail: (title: String, url: String, type: BookType) -> Unit,
 ) : EpoxyController() {
 
     private val comicGenres = CopyOnWriteArrayList<Genre.Comic>()
@@ -84,7 +86,7 @@ class SearchController(
                             CardModel_().id(model.title.hashCode())
                                 .title(model.title)
                                 .urlToImage(model.imageUrl)
-                                .listener { _ ->  }
+                                .listener { _ -> this@SearchController.goToDetail(model.title, model.url, BookType.Comic) }
                         })
                     }
                 }
@@ -101,7 +103,7 @@ class SearchController(
                             CardModel_().id(model.title.hashCode())
                                 .title(model.title)
                                 .urlToImage(model.imageUrl)
-                                .listener { _ -> this@SearchController.goToMoreSearch(BookType.Manga) }
+                                .listener { _ -> this@SearchController.goToDetail(model.title, model.url, BookType.Manga) }
                         })
                     }
                 }

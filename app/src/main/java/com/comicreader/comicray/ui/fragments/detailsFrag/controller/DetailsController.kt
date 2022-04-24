@@ -7,7 +7,9 @@ import com.comicreader.comicray.data.models.mangaDetails.Chapter
 import com.comicreader.comicray.epoxyModels.episodeCard
 import java.util.concurrent.CopyOnWriteArrayList
 
-class DetailsController : EpoxyController() {
+class DetailsController(
+    private val goToRead: (url: String, type: BookType) -> Unit
+) : EpoxyController() {
 
     private var comicIssues: CopyOnWriteArrayList<Issue> = CopyOnWriteArrayList()
     private var mangaChapters: CopyOnWriteArrayList<Chapter> = CopyOnWriteArrayList()
@@ -37,6 +39,7 @@ class DetailsController : EpoxyController() {
                     episodeCard {
                         id("episodeNo" + comicsIssue.rawName)
                         title(comicsIssue.rawName)
+                        listener { this@DetailsController.goToRead(comicsIssue.url, BookType.Comic) }
                     }
                 }
             }
@@ -48,6 +51,7 @@ class DetailsController : EpoxyController() {
                     episodeCard {
                         id("episodeNo" + mangaChapter.name)
                         title(mangaChapter.name)
+                        listener { this@DetailsController.goToRead(mangaChapter.url, BookType.Manga) }
                     }
                 }
             }

@@ -14,9 +14,13 @@ abstract class EpisodeCard : EpoxyModelWithHolder<EpisodeCard.EpisodeViewHolder>
     @EpoxyAttribute
     open var title: String? = null
 
+    @EpoxyAttribute(value = [EpoxyAttribute.Option.IgnoreRequireHashCode])
+    open var listener: () -> Unit = {}
+
     override fun bind(holder: EpisodeViewHolder) {
         holder.binding.apply {
             episodeNo.text = title
+            root.setOnClickListener { listener.invoke() }
         }
     }
 

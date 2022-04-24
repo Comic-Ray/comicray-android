@@ -35,6 +35,8 @@ class ReadFragment : ValueFragment(R.layout.fragment_read) {
 
         val args = getKeyArgs<Args>()
 
+        binding.swipeRefreshLayout.isEnabled = false
+
         setToolbarMenu()
         setRecyclerView()
         setProgressIndicator()
@@ -116,6 +118,7 @@ class ReadFragment : ValueFragment(R.layout.fragment_read) {
             return FragmentNavigator.NavOptions(
                 args = Args(url = url, type = type),
                 animation = AnimationDefinition.Fade,
+                transaction = FragmentNavigator.TransactionType.ADD,
                 remember = true
             )
         }

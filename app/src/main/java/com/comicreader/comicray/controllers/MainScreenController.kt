@@ -64,9 +64,7 @@ class MainScreenController(private val goToGenre: (Genre) -> Unit, private val g
                     CardModel_().id("featured-comics-id:" + item.title)
                         .title(item.title)
                         .urlToImage(item.imageUrl)
-                        .listener { _ ->
-                            this@MainScreenController.goToDetail(item)
-                        }
+                        .listener { _ -> this@MainScreenController.goToDetail(item) }
                 })
             }
         }
@@ -84,9 +82,7 @@ class MainScreenController(private val goToGenre: (Genre) -> Unit, private val g
                     CardModel_().id("id" + item.title)
                         .title(item.title)
                         .urlToImage(item.imageUrl)
-                        .listener { _ ->
-                            this@MainScreenController.goToDetail(item)
-                        }
+                        .listener { _ -> this@MainScreenController.goToDetail(item) }
                 })
             }
         }

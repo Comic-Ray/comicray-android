@@ -9,6 +9,7 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.comicreader.comicray.GlideApp
 import com.comicreader.comicray.R
+import com.comicreader.comicray.data.models.BookType
 import com.comicreader.comicray.databinding.ItemFragmentReadBinding
 
 @EpoxyModelClass(layout = R.layout.item_fragment_read)

@@ -19,6 +19,7 @@ import com.kpstv.navigation.ValueFragment
 import dagger.hilt.android.AndroidEntryPoint
 import com.comicreader.comicray.extensions.hide
 import com.comicreader.comicray.extensions.show
+import com.comicreader.comicray.ui.fragments.detailsFrag.DetailsFragment
 
 @AndroidEntryPoint
 class SearchFragment : ValueFragment(R.layout.fragment_search) {
@@ -39,6 +40,10 @@ class SearchFragment : ValueFragment(R.layout.fragment_search) {
             goToMoreSearch = { type ->
                 val options = MoreFragment.getSearchNavOptions(viewModel.getCurrentQuery(), type = type)
                 navViewModel.navigateTo(MainRoutes.MORE, options)
+            },
+            goToDetail = { data ->
+                val options = DetailsFragment.getNavOptions(data.title, data.url, data.type)
+                navViewModel.navigateTo(MainRoutes.DETAIL, options)
             }
         )
         binding.epoxyRecyclerView.setController(controller)
