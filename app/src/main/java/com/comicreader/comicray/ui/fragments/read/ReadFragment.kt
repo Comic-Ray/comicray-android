@@ -101,10 +101,10 @@ class ReadFragment : ValueFragment(R.layout.fragment_read) {
 
         binding.toolbar.setOnMenuItemClickListener listener@{ item ->
             when(item.itemId) {
-                R.id.action_share -> {
-                    // TODO(KP): Deeplink support to directly open comics
-                    return@listener true
-                }
+//                R.id.action_share -> {
+//                    // TODO(KP): Deeplink support to directly open comics
+//                    return@listener true
+//                }
             }
             return@listener false
         }

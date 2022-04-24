@@ -11,4 +11,8 @@
     <string name="search_query">Search…</string>
     <string name="search_on">Search for &quot;%1$s&quot;</string>
     <string name="menu_share">Share</string>
+    <string name="status">Status:</string>
+    <string name="by">By:</string>
+    <string name="description">Description</string>
+    <string name="episode">Episode</string>
 </resources>

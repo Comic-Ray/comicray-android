@@ -1,163 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipeRefreshLayout"
+    android:id="@+id/coLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:background="?colorBackground">
 
-    <RelativeLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/coLayout"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:navigationIcon="@drawable/ic_back" />
 
-            <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/appBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
-                app:elevation="-10dp">
+    </com.google.android.material.appbar.AppBarLayout>
 
-                <com.google.android.material.appbar.CollapsingToolbarLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fitsSystemWindows="true"
-                    app:layout_scrollFlags="scroll">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/recView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:overScrollMode="never" />
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:layout_collapseMode="parallax">
-
-                            <ImageView
-                                android:id="@+id/imgView"
-                                android:layout_width="150dp"
-                                android:layout_height="200dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_marginStart="@dimen/dimen_10dp"
-                                android:layout_marginTop="10dp"
-                                tools:src="@color/black" />
-
-                            <TextView
-                                android:id="@+id/txtTitle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/dimen_10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_toEndOf="@+id/imgView"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                tools:text="Title of the Comics omic eeb cimcu isc " />
-
-                            <com.airbnb.epoxy.EpoxyRecyclerView
-                                android:id="@+id/chipRec"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/txtTitle"
-                                android:layout_marginStart="@dimen/dimen_4dp"
-                                android:layout_toEndOf="@+id/imgView"
-                                />
-
-                            <TextView
-                                android:id="@+id/status"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/chipRec"
-                                android:layout_marginStart="@dimen/dimen_5dp"
-                                android:layout_toEndOf="@+id/imgView"
-                                android:text="Status:"
-                                android:layout_marginTop="10dp"/>
-
-                            <TextView
-                                android:id="@+id/statusTxt"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/chipRec"
-                                android:layout_marginStart="@dimen/dimen_5dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_toEndOf="@+id/status"
-                                tools:text="Status:" />
-
-                            <TextView
-                                android:id="@+id/author"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/status"
-                                android:layout_marginStart="@dimen/dimen_5dp"
-                                android:layout_marginTop="3dp"
-                                android:layout_toEndOf="@+id/imgView"
-                                android:text="By"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/authortxt"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/status"
-                                android:layout_marginStart="@dimen/dimen_5dp"
-                                android:layout_marginTop="3dp"
-                                android:layout_toEndOf="@+id/author"
-                                tools:text="Status:" />
-
-                            <TextView
-                                android:id="@+id/description"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/imgView"
-                                android:layout_margin="8dp"
-                                android:text="Description"
-                                android:textSize="18sp" />
-
-                            <TextView
-                                android:id="@+id/descriptiontxt"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/description"
-                                android:layout_marginHorizontal="8dp"
-                                android:textSize="18sp"
-                                tools:text="jncsjdnj_dnscknskdn" />
-
-                            <TextView
-                                android:id="@+id/txtEpisodes"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/descriptiontxt"
-                                android:layout_margin="5dp"
-                                android:text="Episodes:"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                app:layout_anchorGravity="bottom" />
-
-                        </RelativeLayout>
-                    </androidx.cardview.widget.CardView>
-
-                </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-            </com.google.android.material.appbar.AppBarLayout>
-
-            <com.airbnb.epoxy.EpoxyRecyclerView
-                android:id="@+id/recView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:clipChildren="false"
-                android:overScrollMode="never"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_anchor="@id/appBar"
-                app:layout_anchorGravity="bottom"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    </RelativeLayout>
-
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

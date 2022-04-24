@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.comicreader.comicray.R
 import com.comicreader.comicray.data.models.BookType
 import com.comicreader.comicray.data.models.comicDetails.ComicDetailsResponse
+import com.comicreader.comicray.data.models.custom.toCommonDetail
 import com.comicreader.comicray.data.models.mangaDetails.MangaDetailsResponse
 import com.comicreader.comicray.databinding.FragmentDetailsBinding
 import com.comicreader.comicray.extensions.viewBinding
@@ -22,7 +23,9 @@ import com.comicreader.comicray.ui.activities.MainNavViewModel
 import com.comicreader.comicray.ui.activities.MainRoutes
 import com.comicreader.comicray.ui.fragments.detailsFrag.controller.ChipController
 import com.comicreader.comicray.ui.fragments.detailsFrag.controller.DetailsController
+import com.comicreader.comicray.ui.fragments.more.MoreFragment
 import com.comicreader.comicray.ui.fragments.read.ReadFragment
+import com.comicreader.comicray.ui.fragments.read.ReadViewModel
 import com.comicreader.comicray.utils.Resource
 import com.kpstv.navigation.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,23 +42,27 @@ class DetailsFragment : ValueFragment(R.layout.fragment_details) {
 
     private lateinit var detailsController: DetailsController
 
-    private lateinit var chipController: ChipController
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val args = getKeyArgs<DetailsArgs>()
 
-        chipController = ChipController()
-        chipController.submitType(args.type)
+        binding.swipeRefreshLayout.isEnabled = false
+
+        binding.toolbar.setNavigationOnClickListener { goBack() }
 
         detailsController = DetailsController(
             goToRead = { url, type ->
                 val options = ReadFragment.getNavOptions(url, type)
                 navViewModel.navigateTo(MainRoutes.READ, options)
-            }
+            },
+            goToGenre = { genre ->
+                val options = MoreFragment.getGenreNavOptions(genre)
+                navViewModel.navigateTo(MainRoutes.MORE, options)
+            },
         )
         detailsController.submitType(args.type)
+        binding.recView.setController(detailsController)
 
         viewModel.onFetch(args.url, args.type)
 
@@ -64,19 +71,13 @@ class DetailsFragment : ValueFragment(R.layout.fragment_details) {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     launch {
                         viewModel.detailsComic.collect {
+                            binding.swipeRefreshLayout.isRefreshing = it is Resource.Loading
                             when (it) {
-                                is Resource.Loading -> {
-                                    binding.swipeRefreshLayout.isEnabled = true
-                                    binding.swipeRefreshLayout.isRefreshing = true
-                                }
-
+                                is Resource.Loading -> { }
                                 is Resource.Success -> {
-                                    binding.swipeRefreshLayout.isEnabled = false
                                     setComicDetails(it.data!!)
                                 }
-
                                 is Resource.Error -> {
-                                    binding.swipeRefreshLayout.isEnabled = true
                                     Toast.makeText(
                                         context,
                                         "${it.throwable?.localizedMessage}",
@@ -122,43 +123,13 @@ class DetailsFragment : ValueFragment(R.layout.fragment_details) {
     }
 
     private fun setMangaDetails(data: MangaDetailsResponse) {
-        binding.txtTitle.text = data.title
-        binding.descriptiontxt.text = data.summary
-        Glide.with(binding.imgView)
-            .load(data.imageUrl)
-            .into(binding.imgView)
-        binding.authortxt.text = data.authors.getOrNull(0)?.name
-        binding.statusTxt.text = data.status
-
-        //chip impl
-        chipController.submitMangaGenres(data.genres)
-        binding.chipRec.setController(chipController)
-        binding.chipRec.setHasFixedSize(true)
-
-        //details Controller IMPL
+        detailsController.detail = data.toCommonDetail()
         detailsController.submitMangaChapters(data.chapters.asReversed())
-        binding.recView.setController(detailsController)
-        binding.recView.setHasFixedSize(true)
     }
 
     private fun setComicDetails(data: ComicDetailsResponse) {
-        binding.txtTitle.text = data.title
-        binding.descriptiontxt.text = data.summary
-        Glide.with(binding.imgView)
-            .load(data.imageUrl)
-            .into(binding.imgView)
-        binding.authortxt.text = data.author
-        binding.statusTxt.text = data.status
-
-        //chip impl
-        chipController.submitComicGenres(data.genres)
-        binding.chipRec.setController(chipController)
-        binding.chipRec.setHasFixedSize(true)
-
-        //details Controller IMPL
+        detailsController.detail = data.toCommonDetail()
         detailsController.submitComicChapters(data.issues.asReversed())
-        binding.recView.setController(detailsController)
-        binding.recView.setHasFixedSize(true)
     }
 
     @Parcelize
@@ -168,7 +139,7 @@ class DetailsFragment : ValueFragment(R.layout.fragment_details) {
         fun getNavOptions(name: String, url: String, type: BookType): FragmentNavigator.NavOptions {
             return FragmentNavigator.NavOptions(
                 args = DetailsArgs(name = name, url = url, type = type),
-                transaction = FragmentNavigator.TransactionType.REPLACE,
+                transaction = FragmentNavigator.TransactionType.ADD,
                 animation = AnimationDefinition.SlideInRight,
                 remember = true
             )

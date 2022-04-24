@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    app:cardBackgroundColor="?colorForeground"
+    app:cardCornerRadius="5dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:layout_collapseMode="parallax">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgView"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:layout_alignParentStart="true"
+            app:shapeAppearanceOverlay="@style/RoundedImageView"
+            tools:src="@color/black" />
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/imgView"
+            android:textColor="?colorTextPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:text="Title of the Comics omic eeb cimcu isc " />
+
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/chipRec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtTitle"
+            android:layout_marginVertical="5dp"
+            android:layout_toEndOf="@+id/imgView"
+            android:clipToPadding="false"
+            android:paddingHorizontal="15dp" />
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/chipRec"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/imgView"
+            android:text="@string/status"
+            android:textColor="?colorTextTertiary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/statusTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/chipRec"
+            android:layout_marginStart="@dimen/dimen_5dp"
+            android:layout_toEndOf="@+id/status"
+            android:textColor="?colorTextSecondary"
+            android:textSize="13sp"
+            tools:text="Status:" />
+
+        <TextView
+            android:id="@+id/author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/status"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="3dp"
+            android:layout_toEndOf="@+id/imgView"
+            android:text="@string/by"
+            android:textColor="?colorTextTertiary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/authortxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/status"
+            android:layout_marginStart="@dimen/dimen_5dp"
+            android:layout_marginTop="3dp"
+            android:layout_toEndOf="@+id/author"
+            android:textColor="?colorTextSecondary"
+            android:textSize="13sp"
+            tools:text="latest" />
+
+
+        <TextView
+            android:id="@+id/descriptiontxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgView"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:textColor="?colorTextTertiary"
+            android:textSize="15sp"
+            tools:text="jncsjdnj_dnscknskdn" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

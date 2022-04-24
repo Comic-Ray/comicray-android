@@ -8,6 +8,7 @@ import com.comicreader.comicray.data.models.Genre
 import com.comicreader.comicray.epoxyModels.CardModel_
 import com.comicreader.comicray.epoxyModels.loaderView
 import com.comicreader.comicray.epoxyModels.overline
+import com.comicreader.comicray.epoxyModels.spacer
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -41,6 +42,11 @@ class MainScreenController(private val goToGenre: (Genre) -> Unit, private val g
 
     override fun buildModels() {
         Carousel.setDefaultGlobalSnapHelperFactory(null)
+
+        spacer {
+            id("header-spacer")
+            heightDp(10f)
+        }
 
         if (featuredComics.isEmpty() && dataMap.isEmpty()) {
             loaderView {
