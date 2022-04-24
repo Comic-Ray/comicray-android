@@ -50,7 +50,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
         })
 
         binding.btnComic.setOnClickListener {
-            parentNavigator.gotoDetails(name = "Action", url = "https://www.comicextra.com/comic/batman-2016", type = BookType.Comic)
+            parentNavigator.gotoDetails(name = "Action", url = "https://mangakakalot.com/manga/tu926037", type = BookType.Manga)
 
         }
     }

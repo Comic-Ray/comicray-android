@@ -41,7 +41,7 @@
                             <ImageView
                                 android:id="@+id/imgView"
                                 android:layout_width="150dp"
-                                android:layout_height="180dp"
+                                android:layout_height="200dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_marginStart="@dimen/dimen_10dp"
                                 android:layout_marginTop="10dp"
@@ -52,17 +52,62 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/dimen_10dp"
-                                android:layout_marginTop="20dp"
+                                android:layout_marginTop="10dp"
                                 android:layout_toEndOf="@+id/imgView"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 tools:text="Title of the Comics omic eeb cimcu isc " />
 
-                            <com.google.android.material.chip.Chip
+                            <com.airbnb.epoxy.EpoxyRecyclerView
+                                android:id="@+id/chipRec"
+                                android:layout_width="wrap_content"
+                                android:layout_height="90dp"
+                                android:layout_below="@+id/txtTitle"
+                                android:layout_marginStart="@dimen/dimen_4dp"
+                                android:layout_toEndOf="@+id/imgView"
+                                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+
+
+                            <TextView
+                                android:id="@+id/status"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@+id/txtTitle"
-                                android:layout_toEndOf="@+id/imgView" />
+                                android:text="Status:"
+                                android:layout_marginStart="@dimen/dimen_5dp"
+                                android:layout_below="@id/chipRec"
+                                android:layout_toEndOf="@+id/imgView"
+                                android:layout_marginTop="5dp"/>
+
+                            <TextView
+                                android:id="@+id/statusTxt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/chipRec"
+                                android:layout_marginStart="@dimen/dimen_5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_toEndOf="@+id/status"
+                                tools:text="Status:" />
+
+                            <TextView
+                                android:id="@+id/author"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="By"
+                                android:layout_marginStart="@dimen/dimen_5dp"
+                                android:layout_below="@id/status"
+                                android:textStyle="bold"
+                                android:layout_toEndOf="@+id/imgView"
+                                android:layout_marginTop="3dp"/>
+
+                            <TextView
+                                android:id="@+id/authortxt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="Status:"
+                                android:layout_marginStart="@dimen/dimen_5dp"
+                                android:layout_below="@id/status"
+                                android:layout_toEndOf="@+id/author"
+                                android:layout_marginTop="3dp"/>
 
                             <TextView
                                 android:id="@+id/description"
@@ -100,18 +145,19 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <com.airbnb.epoxy.EpoxyRecyclerView
+                android:id="@+id/recView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:clipChildren="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_anchor="@id/appBar"
+                app:layout_anchorGravity="bottom"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
-        <com.airbnb.epoxy.EpoxyRecyclerView
-            android:id="@+id/recView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:clipChildren="false"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:layout_below="@+id/coLayout"
-            app:layout_anchorGravity="bottom"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </RelativeLayout>
 

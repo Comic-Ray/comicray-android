@@ -15,23 +15,23 @@ import retrofit2.http.Query
 
 interface ComicApi {
 
-    @GET("comic/Home/featured")
+    @GET("v1/comic/Home/featured")
     suspend fun getFeaturedComics(): List<FeaturedComic>
 
-    @GET("comic/Home/ongoing")
+    @GET("v1/comic/Home/ongoing")
     fun getOngoingComics(): Response<List<OngoingComic>>
 
-    @GET("comic/Home/completed")
+    @GET("v1/comic/Home/completed")
     fun getCompletedComics(): Response<List<CompletedComic>>
 
-    @GET("comic/Genre")
+    @GET("v1/comic/Genre")
     suspend fun getGenreComics(
         @Query("tag") tag : String,
         @Query("page") page : Int
     ) : GenreResponse
 
     @Headers("Accept: application/json")
-    @GET("manga/Genre")
+    @GET("v1/manga/Genre")
     suspend fun getGenreManga(
         @Query("type") tag : String = "Latest",
         @Query("state") state : String =  "All",
@@ -40,7 +40,7 @@ interface ComicApi {
     ) : GenreResponse
 
 
-    @GET("comic/Detail")
+    @GET("v1/comic/Detail")
     suspend fun getcomicDetails(
         @Query("url") url:String
     ): ComicDetailsResponse
