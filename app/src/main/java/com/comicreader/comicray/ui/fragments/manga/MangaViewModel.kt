@@ -2,6 +2,9 @@ package com.comicreader.comicray.ui.fragments.manga
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.comicreader.comicray.data.models.DataItem
+import com.comicreader.comicray.data.models.custom.ComicDetails
+import com.comicreader.comicray.data.models.custom.toDataItem
 import com.comicreader.comicray.data.repositories.MangaRepository
 import com.comicreader.comicray.utils.Event
 import com.comicreader.comicray.utils.Refresh
@@ -38,7 +41,7 @@ class MangaViewModel @Inject constructor(
                 }
             }
         )
-    }.filter { it is Resource.Success }.mapNotNull { it.data }
+    }.filter { it is Resource.Success }.mapNotNull { it.data}
 
     fun getDramaComics() = refreshTriggerChannel.flatMapLatest {
         repository.getGenreComics(
@@ -86,10 +89,14 @@ class MangaViewModel @Inject constructor(
     }.filter { it is Resource.Success }.mapNotNull { it.data }
 
 
-    fun onManuelRefresh() {
+    fun onManualRefresh() {
         viewModelScope.launch {
             _refreshTriggerChannel.emit(Refresh.Force)
         }
+    }
+
+    private fun convertToCommonData(data: List<ComicDetails>) : List<DataItem> {
+        return data.map { it.toDataItem() }
     }
 
     fun onStart() {

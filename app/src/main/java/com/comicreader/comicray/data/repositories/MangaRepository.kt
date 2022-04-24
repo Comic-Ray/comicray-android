@@ -2,6 +2,8 @@ package com.comicreader.comicray.data.repositories
 
 import androidx.room.withTransaction
 import com.comicreader.comicray.api.ComicApi
+import com.comicreader.comicray.api.MangaApi
+import com.comicreader.comicray.data.models.Genre
 import com.comicreader.comicray.data.models.custom.GenreResponse
 import com.comicreader.comicray.db.ComicDatabase
 import com.comicreader.comicray.utils.Resource
@@ -13,6 +15,7 @@ import javax.inject.Inject
 
 class MangaRepository @Inject constructor(
     private val comicApi: ComicApi,
+    private val mangaApi: MangaApi,
     private val comicDb: ComicDatabase
 ) {
 
@@ -59,6 +62,15 @@ class MangaRepository @Inject constructor(
             }
             onFetchFailed(it)
         }
+    )
+
+    fun getGenreList(): Flow<Resource<List<Genre.Manga>>> = networkBoundResource(
+        query = { comicDb.homeComicDao().getMangaGenreList() },
+        fetch = { mangaApi.getMangaGenreList() },
+        saveFetchResult = { comicDb.homeComicDao().saveMangaGenreList(it) },
+        shouldFetch = { it.firstOrNull()?.isExpired() ?: true },
+        onFetchFailed = {},
+        onFetchSuccess = {}
     )
     
 }

@@ -7,4 +7,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="retry">Retry</string>
     <string name="genre_title">Based on %1$s</string>
+    <string name="genre_popular">Popular genre in &quot;%1$s&quot;</string>
+    <string name="search_query">Search...</string>
 </resources>

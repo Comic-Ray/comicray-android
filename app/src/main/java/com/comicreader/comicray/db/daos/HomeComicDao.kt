@@ -1,9 +1,7 @@
 package com.comicreader.comicray.db.daos
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+import com.comicreader.comicray.data.models.Genre
 import com.comicreader.comicray.data.models.completedComic.CompletedComic
 import com.comicreader.comicray.data.models.custom.CustomData
 import com.comicreader.comicray.data.models.custom.GenreResponse
@@ -50,4 +48,27 @@ interface HomeComicDao {
     @Query("DELETE FROM GenreComics WHERE tag =:tag AND Comictype=:type")
     suspend fun deleteGenreComicsResponse(tag: String, type: String)
 
+    @Query("SELECT * FROM comic_genre")
+    fun getComicGenreList() : Flow<List<Genre.Comic>>
+
+    @Query("SELECT * FROM manga_genre")
+    fun getMangaGenreList() : Flow<List<Genre.Manga>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGenreComics(list: List<Genre.Comic>)
+
+    @Transaction
+    suspend fun saveComicGenreList(list: List<Genre.Comic>) {
+        val data = list.map { it.copy(expiry = it.createNewExpiry()) }
+        insertGenreComics(data)
+    }
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGenreManga(list: List<Genre.Manga>)
+
+    @Transaction
+    suspend fun saveMangaGenreList(list: List<Genre.Manga>) {
+        val data = list.map { it.copy(expiry = it.createNewExpiry()) }
+        insertGenreManga(data)
+    }
 }
