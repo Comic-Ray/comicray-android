@@ -5,12 +5,15 @@ import com.comicreader.comicray.api.ComicApi
 import com.comicreader.comicray.api.MangaApi
 import com.comicreader.comicray.data.models.Genre
 import com.comicreader.comicray.data.models.custom.GenreResponse
+import com.comicreader.comicray.data.models.mangaDetails.MangaDetailsResponse
 import com.comicreader.comicray.db.ComicDatabase
 import com.comicreader.comicray.utils.Resource
 import com.comicreader.comicray.utils.networkBoundResource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
+import java.lang.Exception
 import javax.inject.Inject
 
 class MangaRepository @Inject constructor(
@@ -72,5 +75,14 @@ class MangaRepository @Inject constructor(
         onFetchFailed = {},
         onFetchSuccess = {}
     )
+
+    fun getMangaDetails(url: String): Flow<Resource<MangaDetailsResponse>> = flow{
+        try {
+            val data = mangaApi.getMangaDetails(url)
+            emit(Resource.Success(data))
+        }catch (e: Exception){
+            emit(Resource.Error(e))
+        }
+    }
     
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.comicreader.comicray.data.models.BookType
 import com.comicreader.comicray.data.models.comicDetails.ComicDetailsResponse
+import com.comicreader.comicray.data.models.mangaDetails.MangaDetailsResponse
 import com.comicreader.comicray.data.repositories.ComicRepository
 import com.comicreader.comicray.data.repositories.MangaRepository
 import com.comicreader.comicray.utils.Resource
@@ -24,6 +25,10 @@ class DetailsViewModel @Inject constructor(
         MutableStateFlow<Resource<ComicDetailsResponse>>(Resource.Loading())
     val detailsComic get() = _detailsComic
 
+    private val _detailsManga =
+        MutableStateFlow<Resource<MangaDetailsResponse>>(Resource.Loading())
+    val detailsManga get() = _detailsManga
+
     private fun getComicDetails(url: String) {
         viewModelScope.launch {
             comicRepository.getComicDetails(url)
@@ -39,6 +44,21 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
+    private fun getMangaDetails(url: String){
+        viewModelScope.launch {
+            mangaRepository.getMangaDetails(url)
+                .collect {
+                    if (it is Resource.Success) {
+                        if (it.data!=null) {
+                            _detailsManga.emit(Resource.Success(it.data))
+                        }
+                    } else {
+                        _detailsManga.emit(Resource.Error(it.throwable!!))
+                    }
+                }
+        }
+    }
+
 
     fun onFetch(url: String, type: BookType) {
         viewModelScope.launch {
@@ -46,7 +66,8 @@ class DetailsViewModel @Inject constructor(
                 _detailsComic.emit(Resource.Loading())
                 getComicDetails(url)
             }else{
-
+                _detailsManga.emit(Resource.Loading())
+                getMangaDetails(url)
             }
         }
 
