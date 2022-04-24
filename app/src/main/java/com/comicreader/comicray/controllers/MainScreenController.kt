@@ -81,17 +81,6 @@ class MainScreenController : AsyncEpoxyController() {
         requestModelBuild()
     }
 
-//    fun submitList(data: Map<ComicGenres, CustomData>){
-//        featuredComics.clear()
-//        actionComics.clear()
-//        popularComics.clear()
-//
-//        data[ComicGenres.Featured]?.let { featuredComics.addAll(it.comics) }
-//        data[ComicGenres.Action]?.let { actionComics.addAll(it.comics) }
-//        data[ComicGenres.Popular]?.let { popularComics.addAll(it.comics) }
-//        requestModelBuild()
-//    }
-
     fun submitEmptyList() {
         featuredComics.clear()
         popularComics.clear()

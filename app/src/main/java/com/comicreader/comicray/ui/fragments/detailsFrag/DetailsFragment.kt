@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.comicreader.comicray.R
 import com.comicreader.comicray.data.models.BookType
@@ -134,10 +135,7 @@ class DetailsFragment : ValueFragment() {
         binding.statusTxt.text = data.status
 
         //chip impl
-        val gridLayoutManager = GridLayoutManager(requireContext(), 2)
-        chipController.spanCount = 2
-        gridLayoutManager.spanSizeLookup = chipController.spanSizeLookup
-        binding.chipRec.layoutManager = gridLayoutManager
+        binding.chipRec.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         chipController.submitMangaGenres(data.genres)
         binding.chipRec.setController(chipController)
         binding.chipRec.setHasFixedSize(true)
@@ -158,10 +156,6 @@ class DetailsFragment : ValueFragment() {
         binding.statusTxt.text = data.status
 
         //chip impl
-        val gridLayoutManager = GridLayoutManager(requireContext(), 2)
-        chipController.spanCount = 2
-        gridLayoutManager.spanSizeLookup = chipController.spanSizeLookup
-        binding.chipRec.layoutManager = gridLayoutManager
         chipController.submitComicGenres(data.genres)
         binding.chipRec.setController(chipController)
         binding.chipRec.setHasFixedSize(true)
