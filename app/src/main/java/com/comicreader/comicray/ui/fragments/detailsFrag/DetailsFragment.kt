@@ -134,10 +134,6 @@ class DetailsFragment : ValueFragment() {
         binding.statusTxt.text = data.status
 
         //chip impl
-        val gridLayoutManager = GridLayoutManager(requireContext(), 2)
-        chipController.spanCount = 2
-        gridLayoutManager.spanSizeLookup = chipController.spanSizeLookup
-        binding.chipRec.layoutManager = gridLayoutManager
         chipController.submitMangaGenres(data.genres)
         binding.chipRec.setController(chipController)
         binding.chipRec.setHasFixedSize(true)
@@ -158,10 +154,6 @@ class DetailsFragment : ValueFragment() {
         binding.statusTxt.text = data.status
 
         //chip impl
-        val gridLayoutManager = GridLayoutManager(requireContext(), 2)
-        chipController.spanCount = 2
-        gridLayoutManager.spanSizeLookup = chipController.spanSizeLookup
-        binding.chipRec.layoutManager = gridLayoutManager
         chipController.submitComicGenres(data.genres)
         binding.chipRec.setController(chipController)
         binding.chipRec.setHasFixedSize(true)
