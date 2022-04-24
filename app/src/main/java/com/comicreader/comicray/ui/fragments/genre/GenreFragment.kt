@@ -2,12 +2,10 @@ package com.comicreader.comicray.ui.fragments.genre
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.comicreader.comicray.R
-import com.comicreader.comicray.data.models.Genre
-import com.comicreader.comicray.data.models.GenreType
+import com.comicreader.comicray.data.models.BookType
 import com.comicreader.comicray.databinding.FragmentGenreBinding
 import com.comicreader.comicray.extensions.viewBinding
 import com.comicreader.comicray.ui.fragments.genre.controller.GenreController
@@ -86,10 +84,10 @@ class GenreFragment : ValueFragment(R.layout.fragment_genre) {
     }
 
     @Parcelize
-    data class Args(val name: String, val tag: String, val type: GenreType) : BaseArgs()
+    data class Args(val name: String, val tag: String, val type: BookType) : BaseArgs()
 
     companion object {
-        fun FragmentNavigator.goToGenre(name: String, tag: String, type: GenreType) {
+        fun FragmentNavigator.goToGenre(name: String, tag: String, type: BookType) {
             val options = FragmentNavigator.NavOptions(
                 args = Args(name = name, tag = tag, type = type),
                 transaction = FragmentNavigator.TransactionType.ADD,

@@ -5,6 +5,7 @@ import android.os.Parcelable
 data class DataItem(
     val title: String,
     val imageUrl: String,
-    val type: GenreType,
+    val url: String,
+    val type: BookType,
     val additionalData: Parcelable? = null
 )

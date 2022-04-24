@@ -11,7 +11,7 @@ import androidx.paging.toLiveData
 import com.comicreader.comicray.api.ComicApi
 import com.comicreader.comicray.api.MangaApi
 import com.comicreader.comicray.data.models.DataItem
-import com.comicreader.comicray.data.models.GenreType
+import com.comicreader.comicray.data.models.BookType
 import com.comicreader.comicray.data.models.custom.toDataItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +25,7 @@ class GenreViewModel @Inject constructor(
     private val mangaApi: MangaApi,
 ) : ViewModel() {
 
-    fun getData(genreTag: String, type: GenreType): GenreListing {
+    fun getData(genreTag: String, type: BookType): GenreListing {
         val dataSourceFactory = GenreDataSourceFactory(
             scope = viewModelScope,
             comicApi = comicApi,
@@ -67,7 +67,7 @@ private class GenreDataSourceFactory(
     private val scope: CoroutineScope,
     private val comicApi: ComicApi,
     private val mangaApi: MangaApi,
-    private val type: GenreType,
+    private val type: BookType,
     private val genreTag: String,
 ) : DataSource.Factory<Int, DataItem>() {
 
@@ -100,7 +100,7 @@ private class GenreDataSource(
     private val loadMoreState: MutableStateFlow<GenreLoadState>,
     private val comicApi: ComicApi,
     private val mangaApi: MangaApi,
-    private val type: GenreType,
+    private val type: BookType,
     private val genreTag: String,
 ) : PageKeyedDataSource<Int, DataItem>() {
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, DataItem>) {
@@ -108,8 +108,8 @@ private class GenreDataSource(
             initialLoadState.emit(GenreLoadState.Loading)
             try {
                 val data = when (type) {
-                    GenreType.Comic -> comicApi.getGenreComics(genreTag, 1).data.map { it.toDataItem() }
-                    GenreType.Manga -> mangaApi.getMangaGenre(genreTag, 1).data.map { it.toDataItem() }
+                    BookType.Comic -> comicApi.getGenreComics(genreTag, 1).data.map { it.toDataItem() }
+                    BookType.Manga -> mangaApi.getMangaGenre(genreTag, 1).data.map { it.toDataItem() }
                 }
                 callback.onResult(data, null, 2)
                 initialLoadState.emit(GenreLoadState.Success)
@@ -125,11 +125,11 @@ private class GenreDataSource(
             try {
                 var totalPages = 0
                 val data = when (type) {
-                    GenreType.Comic -> comicApi.getGenreComics(genreTag, params.key).run {
+                    BookType.Comic -> comicApi.getGenreComics(genreTag, params.key).run {
                         totalPages = this.totalPages
                         data.map { it.toDataItem() }
                     }
-                    GenreType.Manga -> mangaApi.getMangaGenre(genreTag, params.key).run {
+                    BookType.Manga -> mangaApi.getMangaGenre(genreTag, params.key).run {
                         totalPages = this.totalPages
                         data.map { it.toDataItem() }
                     }
