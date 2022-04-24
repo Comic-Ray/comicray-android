@@ -78,6 +78,20 @@ class ComicsViewModel @Inject constructor(
     }.filter { it is Resource.Success }
         .mapNotNull { convertToCommonData(it.data?.data ?: emptyList()) }
 
+    fun getFantasyComics(): Flow<List<DataItem>> = refreshTrigger.flatMapLatest { trigger ->
+        comicRepository.getGenre(
+            forceRefresh = trigger == Refresh.Force,
+            tag = "fantasy-comic",
+            fetchSuccess = {},
+            onFetchFailed = { throwable ->
+                viewModelScope.launch {
+                    eventChannel.send(Event.ShowErrorMessage(throwable))
+                }
+            }
+        )
+    }.filter { it is Resource.Success }
+        .mapNotNull { convertToCommonData(it.data?.data ?: emptyList()) }
+
     fun onManualRefresh() {
         viewModelScope.launch {
             refreshTriggerChannel.emit(Refresh.Force)

@@ -37,6 +37,8 @@ class ReadFragment : ValueFragment(R.layout.fragment_read) {
 
         binding.swipeRefreshLayout.isEnabled = false
 
+        controller.bookType = args.type
+
         setToolbarMenu()
         setRecyclerView()
         setProgressIndicator()

@@ -125,6 +125,7 @@ class SearchController(
                 id("comic-chips")
                 models(this@SearchController.comicGenres.map { model ->
                     Chip_().id(model.tag).title(model.name)
+                        .marginHorizontalDp(5f)
                         .listener { this@SearchController.goToGenre(model.toGenre()) }
                 })
             }
@@ -139,6 +140,7 @@ class SearchController(
                 id("manga-chips")
                 models(this@SearchController.mangaGenres.filterNot { it.name == "Adult" }.map { model ->
                     Chip_().id(model.category).title(model.name)
+                        .marginHorizontalDp(5f)
                         .listener { this@SearchController.goToGenre(model.toGenre()) }
                 })
             }

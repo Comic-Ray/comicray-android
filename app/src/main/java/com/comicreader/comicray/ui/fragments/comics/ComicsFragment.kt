@@ -22,6 +22,7 @@ import com.comicreader.comicray.utils.Constants.Comics
 import com.comicreader.comicray.utils.Event
 import com.kpstv.navigation.ValueFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -64,6 +65,12 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.getPopularComics().collect {
                 controller.addOrReplace(Genre("Popular", tag = "popular-comic", type = BookType.Comic), it)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getFantasyComics().collect {
+                controller.addOrReplace(Genre("Fantasy", tag = "fantasy-comic", type = BookType.Comic), it)
             }
         }
 

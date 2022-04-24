@@ -7,6 +7,7 @@ import com.airbnb.epoxy.EpoxyModelClass
 import com.airbnb.epoxy.EpoxyModelWithHolder
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
+import com.bumptech.glide.request.RequestOptions
 import com.comicreader.comicray.GlideApp
 import com.comicreader.comicray.R
 import com.comicreader.comicray.data.models.BookType
@@ -18,13 +19,23 @@ abstract class ReadImageModel : EpoxyModelWithHolder<ReadImageModel.ReadHolder>(
     @field:EpoxyAttribute
     open lateinit var imageUrl: String
 
+    @field:EpoxyAttribute
+    open lateinit var bookType: BookType
+
     override fun bind(holder: ReadHolder): Unit = with(holder.binding) {
         val headers = LazyHeaders.Builder()
             .addHeader("referer", "https://mangakakalot.com")
             .build()
         GlideApp.with(imageView)
-            .load(GlideUrl(imageUrl, headers))
-            .into(imageView)
+            .asBitmap()
+            .apply(RequestOptions().override(1000))
+            .run {
+            if (bookType == BookType.Manga) {
+                load(GlideUrl(imageUrl, headers))
+            } else {
+                load(imageUrl)
+            }
+        }.into(imageView)
     }
 
     inner class ReadHolder : EpoxyHolder() {
