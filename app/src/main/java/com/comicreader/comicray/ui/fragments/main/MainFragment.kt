@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.comicreader.comicray.R
+import com.comicreader.comicray.data.models.BookType
 import com.comicreader.comicray.databinding.FragmentMainBinding
 import com.comicreader.comicray.ui.fragments.comics.ComicsFragment
+import com.comicreader.comicray.ui.fragments.detailsFrag.DetailsFragment.Companion.gotoDetails
 import com.comicreader.comicray.ui.fragments.manga.MangaFragment
 import com.comicreader.comicray.ui.fragments.search.SearchFragment
 import com.kpstv.navigation.BottomNavigationController
@@ -46,6 +48,11 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
                 )
             override val fragmentNavigationTransition = Animation.SlideHorizontally
         })
+
+        binding.btnComic.setOnClickListener {
+            parentNavigator.gotoDetails(name = "Action", url = "https://www.comicextra.com/comic/batman-2016", type = BookType.Comic)
+
+        }
     }
 
     override fun onBackPressed(): Boolean {

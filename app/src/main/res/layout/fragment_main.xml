@@ -11,11 +11,16 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <Button
+        android:id="@+id/btn_comic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open Comic" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:menu="@menu/bottom_nav_menu" />
-
 
 </LinearLayout>

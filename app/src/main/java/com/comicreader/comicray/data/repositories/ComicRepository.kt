@@ -2,6 +2,7 @@ package com.comicreader.comicray.data.repositories
 
 import androidx.room.withTransaction
 import com.comicreader.comicray.api.ComicApi
+import com.comicreader.comicray.data.models.comicDetails.ComicDetailsResponse
 import com.comicreader.comicray.data.models.Genre
 import com.comicreader.comicray.data.models.custom.GenreResponse
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
@@ -9,8 +10,10 @@ import com.comicreader.comicray.db.ComicDatabase
 import com.comicreader.comicray.utils.Resource
 import com.comicreader.comicray.utils.networkBoundResource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
+import java.lang.Exception
 import javax.inject.Inject
 
 class ComicRepository @Inject constructor(
@@ -107,6 +110,14 @@ class ComicRepository @Inject constructor(
         }
     )
 
+    fun getComicDetails(url: String) = flow<Resource<ComicDetailsResponse>>{
+        try {
+            val data = comicApi.getcomicDetails(url)
+            emit(Resource.Success(data))
+        }catch (e: Exception){
+            emit(Resource.Error(e))
+        }
+    }
 
     fun getGenreList() : Flow<Resource<List<Genre.Comic>>> = networkBoundResource(
         query = { comicDb.homeComicDao().getComicGenreList() },

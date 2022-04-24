@@ -1,22 +1,25 @@
 package com.comicreader.comicray.controllers
 
-import com.airbnb.epoxy.*
+import com.airbnb.epoxy.AsyncEpoxyController
+import com.airbnb.epoxy.Carousel
+import com.airbnb.epoxy.carousel
 import com.comicreader.comicray.data.models.DataItem
 import com.comicreader.comicray.data.models.custom.ComicDetails
-import com.comicreader.comicray.data.models.custom.CustomData
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
 import com.comicreader.comicray.epoxyModels.CardModel_
+import com.comicreader.comicray.epoxyModels.loaderView
 import com.comicreader.comicray.epoxyModels.overline
+import com.comicreader.comicray.utils.Constants.Comics
 import com.comicreader.comicray.utils.ComicGenres
+import com.comicreader.comicray.utils.Constants
 import com.comicreader.comicray.utils.Constants.Comics
 import java.util.concurrent.CopyOnWriteArrayList
 
 class MainScreenController : AsyncEpoxyController() {
 
-    private val featuredComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
-    private val popularComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
-    private val actionComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
-
+    private var featuredComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
+    private var popularComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
+    private var actionComics: CopyOnWriteArrayList<DataItem> = CopyOnWriteArrayList()
     private var comicType: String = ""
 
     private var trendingManga: CopyOnWriteArrayList<ComicDetails> = CopyOnWriteArrayList()
@@ -45,12 +48,7 @@ class MainScreenController : AsyncEpoxyController() {
 
 //    fun submitList(data: Map<ComicGenres, CustomData>){
 //        featuredComics.clear()
-//        actionComics.clear()
-//        popularComics.clear()
-//
-//        data[ComicGenres.Featured]?.let { featuredComics.addAll(it.comics) }
-//        data[ComicGenres.Action]?.let { actionComics.addAll(it.comics) }
-//        data[ComicGenres.Popular]?.let { popularComics.addAll(it.comics) }
+//        featuredComics.addAll(data)
 //        requestModelBuild()
 //    }
 
@@ -83,9 +81,45 @@ class MainScreenController : AsyncEpoxyController() {
         requestModelBuild()
     }
 
+//    fun submitList(data: Map<ComicGenres, CustomData>){
+//        featuredComics.clear()
+//        actionComics.clear()
+//        popularComics.clear()
+//
+//        data[ComicGenres.Featured]?.let { featuredComics.addAll(it.comics) }
+//        data[ComicGenres.Action]?.let { actionComics.addAll(it.comics) }
+//        data[ComicGenres.Popular]?.let { popularComics.addAll(it.comics) }
+//        requestModelBuild()
+//    }
+
+    fun submitEmptyList() {
+        featuredComics.clear()
+        popularComics.clear()
+        actionComics.clear()
+        requestModelBuild()
+    }
+
+    fun submitEmptyListManga() {
+        trendingManga.clear()
+        comedyManga.clear()
+        adventureManga.clear()
+        dramaManga.clear()
+        requestModelBuild()
+    }
+
     override fun buildModels() {
         Carousel.setDefaultGlobalSnapHelperFactory(null)
-        if (this.comicType == Comics) {
+        if (this.comicType == Constants.Comics) {
+
+            if (featuredComics.isNullOrEmpty() && popularComics.isNullOrEmpty() && actionComics.isNullOrEmpty()) {
+                loaderView {
+                    id("All-comics")
+                    titleText("Featured")
+                    titleText2("Popular")
+                    titleText3("Action")
+                }
+            }
+
             if (featuredComics.isNotEmpty()) {
                 overline {
                     id("featuredComic")
@@ -145,6 +179,16 @@ class MainScreenController : AsyncEpoxyController() {
             }
 
         } else {
+
+            if (trendingManga.isNullOrEmpty() && comedyManga.isNullOrEmpty() && adventureManga.isNullOrEmpty() && dramaManga.isNullOrEmpty()) {
+                loaderView {
+                    id("AllManga")
+                    titleText("Trending")
+                    titleText2("Comedy")
+                    titleText3("Adventure")
+                }
+            }
+
             if (!trendingManga.isNullOrEmpty()) {
                 overline {
                     id("trendingManga")
@@ -164,7 +208,7 @@ class MainScreenController : AsyncEpoxyController() {
                 }
             }
 
-            if (!comedyManga.isNullOrEmpty()){
+            if (!comedyManga.isNullOrEmpty()) {
                 overline {
                     id("comedyManga")
                     value("Comedy")
@@ -183,7 +227,7 @@ class MainScreenController : AsyncEpoxyController() {
                 }
             }
 
-            if (!adventureManga.isNullOrEmpty()){
+            if (!adventureManga.isNullOrEmpty()) {
                 overline {
                     id("adventureManga")
                     value("Adventure")
@@ -202,7 +246,7 @@ class MainScreenController : AsyncEpoxyController() {
                 }
             }
 
-            if (!dramaManga.isNullOrEmpty()){
+            if (!dramaManga.isNullOrEmpty()) {
                 overline {
                     id("actionManga")
                     value("Drama")

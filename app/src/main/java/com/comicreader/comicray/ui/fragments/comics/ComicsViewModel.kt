@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.comicreader.comicray.data.models.DataItem
 import com.comicreader.comicray.data.models.custom.ComicDetails
 import com.comicreader.comicray.data.models.custom.CustomData
-import com.comicreader.comicray.data.models.custom.GenreResponse
 import com.comicreader.comicray.data.models.custom.toDataItem
 import com.comicreader.comicray.data.models.featuredcomic.FeaturedComic
 import com.comicreader.comicray.data.repositories.ComicRepository

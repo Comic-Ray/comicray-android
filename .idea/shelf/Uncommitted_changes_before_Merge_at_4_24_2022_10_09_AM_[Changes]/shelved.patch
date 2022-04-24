@@ -1,0 +1,37 @@
+Index: app/src/main/java/com/comicreader/comicray/api/ComicApi.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.comicreader.comicray.api\r\n\r\nimport com.comicreader.comicray.data.models.completedComic.CompletedComic\r\nimport com.comicreader.comicray.data.models.custom.ComicDetails\r\nimport com.comicreader.comicray.data.models.custom.GenreResponse\r\nimport com.comicreader.comicray.data.models.featuredcomic.FeaturedComic\r\nimport com.comicreader.comicray.data.models.ongoingComic.OngoingComic\r\nimport retrofit2.Response\r\nimport retrofit2.http.GET\r\nimport retrofit2.http.Headers\r\nimport retrofit2.http.Query\r\n\r\n\r\ninterface ComicApi {\r\n\r\n    @GET(\"v1/comic/Home/featured\")\r\n    suspend fun getFeaturedComics(): List<FeaturedComic>\r\n\r\n    @GET(\"v1/comic/Home/ongoing\")\r\n    fun getOngoingComics(): Response<List<OngoingComic>>\r\n\r\n    @GET(\"v1/comic/Home/completed\")\r\n    fun getCompletedComics(): Response<List<CompletedComic>>\r\n\r\n    @GET(\"v1/comic/Genre\")\r\n    suspend fun getGenreComics(\r\n        @Query(\"tag\") tag : String,\r\n        @Query(\"page\") page : Int\r\n    ) : GenreResponse\r\n\r\n    @Headers(\"Accept: application/json\")\r\n    @GET(\"manga/Genre\")\r\n    suspend fun getGenreManga(\r\n        @Query(\"type\") tag : String = \"Latest\",\r\n        @Query(\"state\") state : String =  \"All\",\r\n        @Query(\"category\") category : String,\r\n        @Query(\"page\") page : Int = 1\r\n    ) : GenreResponse\r\n\r\n\r\n\r\n\r\n    @GET(\"v1/comic/Genre/list\")\r\n    suspend fun getGenreList() : List<Genre.Comic>\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/comicreader/comicray/api/ComicApi.kt b/app/src/main/java/com/comicreader/comicray/api/ComicApi.kt
+--- a/app/src/main/java/com/comicreader/comicray/api/ComicApi.kt	(revision 5ba447a41da3a99661a99ed4393835aef185f4d8)
++++ b/app/src/main/java/com/comicreader/comicray/api/ComicApi.kt	(date 1650727271221)
+@@ -1,5 +1,6 @@
+ package com.comicreader.comicray.api
+ 
++import com.comicreader.comicray.data.models.Genre
+ import com.comicreader.comicray.data.models.completedComic.CompletedComic
+ import com.comicreader.comicray.data.models.custom.ComicDetails
+ import com.comicreader.comicray.data.models.custom.GenreResponse
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"DesignSurface\">\r\n    <option name=\"filePathToZoomLevelMap\">\r\n      <map>\r\n        <entry key=\"..\\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_comics.xml\" value=\"0.197008547008547\" />\r\n        <entry key=\"..\\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_manga.xml\" value=\"0.197008547008547\" />\r\n        <entry key=\"..\\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/item_comic.xml\" value=\"0.197008547008547\" />\r\n        <entry key=\"..\\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/overline.xml\" value=\"0.197008547008547\" />\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_11\" project-jdk-name=\"11\" project-jdk-type=\"JavaSDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 5ba447a41da3a99661a99ed4393835aef185f4d8)
++++ b/.idea/misc.xml	(date 1650727442831)
+@@ -3,7 +3,9 @@
+   <component name="DesignSurface">
+     <option name="filePathToZoomLevelMap">
+       <map>
++        <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/drawable/ic_arrow_forward.xml" value="0.2325" />
+         <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_comics.xml" value="0.197008547008547" />
++        <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_genre.xml" value="0.18547008547008548" />
+         <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/fragment_manga.xml" value="0.197008547008547" />
+         <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/item_comic.xml" value="0.197008547008547" />
+         <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/overline.xml" value="0.197008547008547" />

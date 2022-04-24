@@ -40,7 +40,9 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
         binding.recView.setHasFixedSize(true)
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getFeaturedComics().collect { controller.setFeaturedComics(it) }
+            viewModel.getFeaturedComics().collect {
+                   controller.setFeaturedComics(it)
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -80,6 +82,7 @@ class ComicsFragment : ValueFragment(R.layout.fragment_comics) {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
+            controller.submitEmptyList()
             viewModel.onManualRefresh()
             binding.swipeRefreshLayout.isRefreshing = false
         }
