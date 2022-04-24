@@ -16,6 +16,9 @@ import com.comicreader.comicray.extensions.show
 import com.comicreader.comicray.extensions.viewBinding
 import com.comicreader.comicray.ui.fragments.read.controller.ReadController
 import com.kpstv.navigation.*
+import com.kpstv.navigation.BaseArgs
+import com.kpstv.navigation.ValueFragment
+import com.kpstv.navigation.getKeyArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
 
