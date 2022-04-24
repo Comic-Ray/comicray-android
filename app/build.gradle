@@ -2,8 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -124,6 +124,7 @@ dependencies {
     implementation "com.airbnb.android:epoxy:$epoxyVersion"
     implementation "com.airbnb.android:epoxy-paging:$epoxyVersion"
     kapt "com.airbnb.android:epoxy-processor:$epoxyVersion"
+
 }
 kapt {
     correctErrorTypes true
