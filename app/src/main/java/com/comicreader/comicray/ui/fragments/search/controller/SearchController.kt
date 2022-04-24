@@ -6,13 +6,17 @@ import com.airbnb.epoxy.carousel
 import com.comicreader.comicray.R
 import com.comicreader.comicray.data.models.BookType
 import com.comicreader.comicray.data.models.Genre
+import com.comicreader.comicray.data.models.Genre.Companion.toGenre
 import com.comicreader.comicray.data.models.custom.ComicSearchResponse
 import com.comicreader.comicray.data.models.custom.MangaSearchResponse
 import com.comicreader.comicray.data.models.custom.SearchCommon
 import com.comicreader.comicray.epoxyModels.*
 import java.util.concurrent.CopyOnWriteArrayList
 
-class SearchController(private val context: Context) : EpoxyController() {
+class SearchController(
+    private val context: Context,
+    private val goToGenre: (Genre) -> Unit
+) : EpoxyController() {
 
     private val comicGenres = CopyOnWriteArrayList<Genre.Comic>()
     private val mangaGenres = CopyOnWriteArrayList<Genre.Manga>()
@@ -53,6 +57,10 @@ class SearchController(private val context: Context) : EpoxyController() {
 
         if (searches != null && searches.isEmpty()) {
             progressBar { id("load-progress") }
+            spacer {
+                id("progress-spacer")
+                heightDp(10f)
+            }
         } else if (searches?.isNotEmpty() == true) {
             val comicSearches = searches.firstOrNull { it.type == BookType.Comic }?.additionalSearchData as? ComicSearchResponse
             val mangaSearches = searches.firstOrNull { it.type == BookType.Manga }?.additionalSearchData as? MangaSearchResponse
@@ -102,43 +110,27 @@ class SearchController(private val context: Context) : EpoxyController() {
             header {
                 id("comic-header")
                 title(context.getString(R.string.genre_popular, context.getString(R.string.comics)))
-                marginHorizontalDp(10f)
-            }
-            spacer {
-                id("comic-spacer-height2")
-                heightDp(10f)
+                marginHorizontalDp(15f)
             }
             carousel {
                 id("comic-chips")
                 models(this@SearchController.comicGenres.map { model ->
                     Chip_().id(model.tag).title(model.name)
-                        .listener {
-
-                        }
+                        .listener { this@SearchController.goToGenre(model.toGenre()) }
                 })
             }
         }
         if (mangaGenres.isNotEmpty()) {
-//            spacer {
-//                id("comic-spacer-height")
-//                heightDp(10f)
-//            }
             header {
                 id("manga-header")
                 title(context.getString(R.string.genre_popular, context.getString(R.string.manga)))
-                marginHorizontalDp(10f)
+                marginHorizontalDp(15f)
             }
-//            spacer {
-//                id("manga-spacer-height")
-//                heightDp(10f)
-//            }
             carousel {
                 id("manga-chips")
-                models(this@SearchController.mangaGenres.map { model ->
+                models(this@SearchController.mangaGenres.filterNot { it.name == "Adult" }.map { model ->
                     Chip_().id(model.category).title(model.name)
-                        .listener {
-
-                        }
+                        .listener { this@SearchController.goToGenre(model.toGenre()) }
                 })
             }
         }

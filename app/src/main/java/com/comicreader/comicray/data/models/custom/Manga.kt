@@ -53,6 +53,14 @@ data class MangaGenreResponse(
     )
 }
 
+fun MangaDetail.toDataItem(): DataItem = DataItem(
+    title = title,
+    imageUrl = imageUrl,
+    url = url,
+    type = BookType.Manga,
+    additionalData = this
+)
+
 fun MangaGenre.toDataItem(): DataItem = DataItem(
     title = title,
     imageUrl = imageUrl,

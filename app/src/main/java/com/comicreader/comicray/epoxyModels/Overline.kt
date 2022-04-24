@@ -25,12 +25,13 @@ abstract class Overline : EpoxyModelWithHolder<Overline.ViewHolder>() {
     override fun bind(holder: ViewHolder) {
         holder.binding.apply {
             titleText.text = value
+            root.isClickable = moreAvailable
             if (moreAvailable) {
                 showMore.show()
             } else {
                 showMore.hide()
             }
-            showMore.setOnClickListener(listener)
+            root.setOnClickListener(listener)
         }
     }
 

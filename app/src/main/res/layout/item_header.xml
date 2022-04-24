@@ -5,5 +5,7 @@
     android:layout_height="wrap_content"
     android:ellipsize="end"
     android:lines="1"
+    android:textColor="?colorTextPrimary"
     android:textSize="17sp"
+    android:textStyle="bold"
     tools:text="Popular Genre in &quot;Comics&quot;" />

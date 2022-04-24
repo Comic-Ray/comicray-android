@@ -8,5 +8,6 @@
     <string name="retry">Retry</string>
     <string name="genre_title">Based on %1$s</string>
     <string name="genre_popular">Popular genre in &quot;%1$s&quot;</string>
-    <string name="search_query">Search...</string>
+    <string name="search_query">Search…</string>
+    <string name="search_on">Search for &quot;%1$s&quot;</string>
 </resources>

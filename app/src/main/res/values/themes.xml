@@ -1,20 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="ComicRay" parent="Theme.MaterialComponents.NoActionBar">
-        <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/background_color</item>
-
         <item name="android:windowBackground">@color/background_color</item>
 
+        <item name="colorTextPrimary">@color/light_white</item>
+        <item name="colorTextSecondary">@color/secondary_white</item>
+        <item name="colorTextTertiary">@color/tertiary_white</item>
         <item name="colorBackground">@color/background_color</item>
+        <item name="colorForeground">@color/card_background_color</item>
     </style>
 
     <style name="ComicRay.episodeCard">

@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.comicreader.comicray.R
-import com.comicreader.comicray.data.models.BookType
 import com.comicreader.comicray.databinding.FragmentMainBinding
 import com.comicreader.comicray.ui.fragments.comics.ComicsFragment
-import com.comicreader.comicray.ui.fragments.genre.GenreFragment.Companion.goToGenre
 import com.comicreader.comicray.ui.fragments.manga.MangaFragment
 import com.comicreader.comicray.ui.fragments.search.SearchFragment
 import com.kpstv.navigation.BottomNavigationController
@@ -39,23 +37,15 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
             .initialize(binding.fragmentContainer)
 
         bottomNavController = navigator.install(object : FragmentNavigator.BottomNavigation(){
-            // The @IdRes of the BottomNavigationView
             override val bottomNavigationViewId: Int = R.id.bottom_nav_view
-
             override val bottomNavigationFragments: Map<Int, KClass<out Fragment>> =
                 mapOf(
                     R.id.Comics to ComicsFragment::class,
                     R.id.Manga to MangaFragment::class,
                     R.id.Search to SearchFragment::class,
                 )
-
-            // Slide from left/right animation when selection is changed.
             override val fragmentNavigationTransition = Animation.SlideHorizontally
         })
-
-        binding.btnGenre.setOnClickListener {
-            parentNavigator.goToGenre(name = "Action", tag = "action-comic", type = BookType.Comic)
-        }
     }
 
     override fun onBackPressed(): Boolean {
