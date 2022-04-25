@@ -15,9 +15,9 @@ import com.comicreader.comicray.data.repositories.MangaRepository
 import com.comicreader.comicray.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
@@ -40,12 +40,20 @@ class SearchViewModel @Inject constructor(
                 innerFlow.emit(emptyList())
                 val scope = CoroutineScope(coroutineContext)
                 scope.launch {
-                    val data = comicApi.getSearch(query, page = 1)
-                    innerFlow.emit(innerFlow.value!! + data.toSearchCommon(query, BookType.Comic))
+                    try {
+                        val data = comicApi.getSearch(query, page = 1)
+                        innerFlow.emit(innerFlow.value!! + data.toSearchCommon(query, BookType.Comic))
+                    } catch (e: Exception) {
+                        innerFlow.emit(innerFlow.value!! + emptyList())
+                    }
                 }
                 scope.launch {
-                    val data = mangaApi.getSearch(query, page = 1)
-                    innerFlow.emit(innerFlow.value!! + data.toSearchCommon(query, BookType.Manga))
+                    try {
+                        val data = mangaApi.getSearch(query, page = 1)
+                        innerFlow.emit(innerFlow.value!! + data.toSearchCommon(query, BookType.Manga))
+                    } catch (e: Exception) {
+                        innerFlow.emit(innerFlow.value!! + emptyList())
+                    }
                 }
             } else {
                 innerFlow.emit(null)
