@@ -16,9 +16,10 @@
         <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/item_comic.xml" value="0.197008547008547" />
         <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/loderview.xml" value="0.18547008547008548" />
         <entry key="..\:/StudioProjects/MainGithubProjects/comicRay/comicray-android/app/src/main/res/layout/overline.xml" value="0.197008547008547" />
+        <entry key="app/src/main/res/layout/item_fragment_read.xml" value="0.1" />
       </map>
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK" />
 </project>

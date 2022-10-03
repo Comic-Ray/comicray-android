@@ -125,6 +125,12 @@ dependencies {
     implementation "com.airbnb.android:epoxy-paging:$epoxyVersion"
     kapt "com.airbnb.android:epoxy-processor:$epoxyVersion"
 
+    //photoView
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+
+
 }
 kapt {
     correctErrorTypes true
